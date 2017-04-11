@@ -1,0 +1,5 @@
+-- run app with shiny
+> runApp("App-1")
+
+-- display in showcase mode
+> runApp("App-1", display.mode = "showcase")
