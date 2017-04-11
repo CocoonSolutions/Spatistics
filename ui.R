@@ -4,7 +4,7 @@ library(shiny)
 shinyUI(fluidPage(theme = "bootstrap.css",
 
   # Application title
-  titlePanel("Hello World!"),
+  titlePanel("Data from 2017-04-11"),
 
   # Sidebar with a slider input for the number of bins
   sidebarLayout(
@@ -20,5 +20,30 @@ shinyUI(fluidPage(theme = "bootstrap.css",
     mainPanel(
       plotOutput("distPlot")
     )
+  ),
+  
+  sidebarLayout(
+    sidebarPanel(
+      fileInput('file1', 'Choose CSV File',
+                accept=c('text/csv', 
+                         'text/comma-separated-values,text/plain',
+                         '.csv')),
+      tags$hr(),
+      checkboxInput('header', 'Header', TRUE),
+      radioButtons('sep', 'Separator',
+                   c(Comma=',',
+                     Semicolon=';',
+                     Tab='\t'),
+                   ','),
+      radioButtons('quote', 'Quote',
+                   c(None='',
+                     'Double Quote'='"',
+                     'Single Quote'="'"),
+                   '"')
+    ),
+    mainPanel(
+      tableOutput('contents')
+    )
   )
+  
 ))
