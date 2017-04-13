@@ -25,6 +25,11 @@
 > git config --global user.email "you@yourserver.org"
 > git remote
 > git branch
+> git ls-files
+-- list files in local repo including unstaged ones.
+> git rm -f <file>
+-- list files in local (only the committed ones).
+> git ls-tree --full-tree -r HEAD
 
 -- To remove all commits/files from a git repo.
 > rm -r .git
