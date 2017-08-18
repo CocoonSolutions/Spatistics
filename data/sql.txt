@@ -1,0 +1,182 @@
+-- data import
+CREATE TABLE public.data1
+(
+ pk serial NOT NULL,
+ issuedate character varying(256),
+ businessline character varying(256),
+ brand character varying(256),
+ producttype character varying(256),
+ size character varying(256),
+ country character varying(256),
+ customer character varying(256),
+ code character varying(256),
+ quantity double precision,
+ cost double precision,
+ CONSTRAINT data1_pkey PRIMARY KEY (pk)
+)
+WITH (
+ OIDS=FALSE
+);
+ALTER TABLE public.data1
+ OWNER TO postgres;
+
+ALTER TABLE public.data1 ALTER COLUMN issuedate TYPE DATE 
+using to_date(issuedate, 'YYYY-MM-DD');
+
+-- import utf-8,csv,header,tab delimited, NULL
+
+SELECT datname,pid,state,query FROM pg_stat_activity;
+-- data cleansing
+select code, count(*) from data1
+where brand is not null and businessline is not null 
+and cost is not null and quantity is not null and quantity > 0 and cost > 0 
+and businessline in ('F??S??','??????G????') and brand not in ('10 G???S ')
+and size <> '????' and businessline = 'F??S??'
+and size in ('EXTRA','NORMAL','EXTRA LARGE','SUPER','SMALL','EXTRA SUPER','STORTI','EXTRA EXTRA SUPER','PICCOLO','EXTRA EXTRA EXTRA SUPER (2000+)')
+--and producttype = '??T????'
+group by code
+order by count(*) desc;
+
+-- 571.879
+select count(*) from data1 
+where brand is not null and businessline is not null 
+and cost is not null and quantity is not null and quantity > 0 and cost > 0 
+and businessline in ('F??S??','??????G????') and brand not in ('10 G???S ')
+and size <> '????' and businessline = 'F??S??'
+and size in ('EXTRA','NORMAL','EXTRA LARGE','SUPER','SMALL','EXTRA SUPER','STORTI','EXTRA EXTRA SUPER','PICCOLO','EXTRA EXTRA EXTRA SUPER (2000+)');
+
+create table data1clean as
+select * 
+from data1
+where brand is not null and businessline is not null 
+and cost is not null and quantity is not null and quantity > 0 and cost > 0 
+and businessline in ('F??S??','??????G????') and brand not in ('10 G???S ')
+and size <> '????' and businessline = 'F??S??'
+and size in ('EXTRA','NORMAL','EXTRA LARGE','SUPER','SMALL','EXTRA SUPER','STORTI','EXTRA EXTRA SUPER','PICCOLO','EXTRA EXTRA EXTRA SUPER (2000+)');
+
+create table data1trans as
+select 
+ pk,
+ issuedate,
+ case
+   when brand = '11 ?O??' then 'Fresh'
+   when brand = '12 ????????????' then 'Processed'
+ 	else 'N/A' 
+ end as productline,
+ case
+	when size = 'EXTRA' then 'Large'
+	when size = 'NORMAL' then 'Superior'
+	when size = 'EXTRA LARGE' then 'Extra Large'
+	when size = 'SUPER' then 'Jumbo'
+	when size = 'SMALL' then 'Brilliant'
+	when size = 'EXTRA SUPER' then 'Extra Jumbo'
+	when size = 'STORTI' then 'Bullets'
+	when size = 'EXTRA EXTRA SUPER' then 'Giant'
+	when size = 'PICCOLO' then 'Fine'
+	when size = 'EXTRA EXTRA EXTRA SUPER (2000+)' then 'Mammouth'
+ 	else 'N/A' 
+ end as size,
+ country,
+ case 
+ 	when country = 'ITALY' then 'ITA'
+	when country = 'GERMANY' then 'DEU'
+	when country = 'FRANCE' then 'FRA'
+	when country = 'GREECE' then 'GRC'
+	when country = 'SPAIN' then 'ESP'
+	when country = 'PORTUGAL' then 'PRT'
+	when country = 'BELGIUM' then 'BEL'
+	when country = 'HOLLAND' then 'NLD'
+	when country = 'U.S.A.' then 'USA'
+	when country = 'GREAT BRITAIN' then 'GBR'
+	when country = 'ROMANIA' then 'ROU'
+	when country = 'SWITZERLAND' then 'CHE'
+	when country = 'BULGARIA' then 'BGR'
+	when country = 'AUSTRIA' then 'AUT'
+	when country = 'CANADA' then 'CAN'
+	when country = 'CROATIA' then 'HRV'
+	when country = 'UNITED ARAB EMIRATES' then 'ARE'
+	when country = 'LUXEMBOURG' then 'LUX'
+	when country = 'IRELAND' then 'IRL'
+	when country = 'SLOVENIA' then 'SVN'
+	when country = 'DENMARK' then 'DNK'
+	when country = 'SERBIA' then 'SRB'
+	when country = 'ALBANIA' then 'ALB'
+	when country = 'REPUBLIC OF KAZAKHSTAN' then 'KAZ'
+	when country = 'CYPRUS' then 'CYP'
+	when country = 'CZECH REPUBLIC' then 'CZE'
+	when country = 'RUSSIA' then 'RUS'
+	when country = 'POLAND' then 'POL'
+	when country = 'LITHUANIA' then 'LTU'
+	when country = 'FYROM' then 'MKD'
+	when country = 'UKRAINE' then 'UKR'
+	when country = 'LATVIA' then 'LVA'
+	when country = 'JORDAN' then 'JOR'
+	when country = 'ESTONIA' then 'EST'
+	when country = 'ISRAEL' then 'ISR'
+	when country = 'KUWAIT' then 'KWT'
+	when country = 'REPUBLIC OF BELARUS' then 'BLR'
+ 	else 'N/A' 
+ end as countrycode,
+ quantity
+from data1clean;
+-- datacountries import
+
+-- datacountries https://developers.google.com/public-data/docs/canonical/countries_csv
+CREATE TABLE public.datacountries
+(
+ pk serial NOT NULL,
+ country character varying(2),
+ latitude double precision,
+ longtitude double precision,
+ name character varying(256)
+)
+WITH (
+ OIDS=FALSE
+);
+ALTER TABLE public.datacountries
+ OWNER TO postgres;
+
+-- import csv,header,tab delimited
+
+alter table datacountries
+add column country2 character varying(256);
+
+update datacountries
+set country2 =
+ case
+	when name = 'United States' then 'U.S.A.'
+	when name = 'Kazakhstan' then 'REPUBLIC OF KAZAKHSTAN'
+	when name = 'Belarus' then 'REPUBLIC OF BELARUS'
+	when name = 'Netherlands' then 'HOLLAND'
+	when name = 'United Kingdom' then 'GREAT BRITAIN'
+	when name = 'Macedonia [FYROM]' then 'FYROM'
+ 	else name 
+ end; 
+
+create table data1trans2 as
+select a.*, b.country countrycode2, b.name countryname2, b.latitude lat, b.longtitude lon
+from data1trans a
+join datacountries b on a.country = upper(b.country2);
+
+-- first allow access to “Everyone” in the file in order to able to write in the file Properties/security/add/Everyone/apply
+
+-- export to csv
+COPY data1trans2 TO 'C:\\Users\\PC001\\Desktop\data1trans2.csv' DELIMITER ',' CSV HEADER;
+
+alter table data1trans2
+add column issueyear character varying(4);
+
+alter table data1trans2
+add column issuemonth character varying(2);
+
+alter table data1trans2
+add column issueday character varying(20);
+
+update data1trans2
+set 
+issueyear = to_char(issuedate, 'YYYY'), 
+issuemonth =  to_char(issuedate, 'MM'), 
+issueday = to_char(issuedate, 'day');
+
+COPY data1trans2 TO 'C:\\Users\\PC001\\Desktop\data1trans2.csv' DELIMITER ',' CSV HEADER;
+
