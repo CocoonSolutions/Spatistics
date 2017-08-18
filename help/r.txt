@@ -3,3 +3,17 @@
 
 -- display in showcase mode
 > runApp("App-1", display.mode = "showcase")
+
+-- load csv
+> data= read.csv("C:/Users/PC001/Desktop/StoryTelling/gitRepo/data/data1trans2.csv")
+
+-- shiny leaflet quick implementation
+> app = shinyApp(
++   ui = fluidPage(leafletOutput('myMap')),
++   server = function(input, output) {
++     map = leaflet() %>% addProviderTiles(providers$CartoDB.Positron)
++     output$myMap = renderLeaflet(map)
++   }
++ )
+-- render in browser
+> if (interactive()) print(app)
