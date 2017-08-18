@@ -41,3 +41,6 @@
 > git add <files>
 > git commit -m 'Initial commit'
 > git push -f origin master
+
+-- To allow push large files
+> git config http.postBuffer 524288000
