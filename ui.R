@@ -1,11 +1,11 @@
-library(leaflet)
+library("leaflet")
 
 # --- new
 # Choices for drop-downs
 vars <- c(
-  "Max Quantity" = "records",
-  "Cumulative Frequency" = "cumulfreqnum",
-  "Quantity" = "quantity",
+  "Top Countries" = "records",
+  "Cumulative Frequency of Quantity" = "cumulfreqnum",
+  "Sum of Quantity" = "quantity",
   "Count of Records" = "cnt"
 )
 # --- new
@@ -51,7 +51,7 @@ fluidPage(theme = "bootstrap.css",
                    ),
                    fluidRow(
                      column(width = 4,
-                            h4("2These changes have increased wealth inequality significantly. In 1963, families near the top had six times the wealth (or, $6 for every $1) of families in the middle. By 2013, they had 12 times the wealth of families in the middle."),
+                            h4("2Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
                             h4(tags$ul(
                               tags$li("First list item First list item First list item First list item First list item"), 
                               br(),
@@ -61,21 +61,25 @@ fluidPage(theme = "bootstrap.css",
                             ))
                      ),
                      column(width = 8,
-                            h4("3These changes have increased wealth inequality significantly. In 1963, families near the top had six times the wealth (or, $6 for every $1) of families in the middle. By 2013, they had 12 times the wealth of families in the middle."),
+                            h4("3Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
                             leafletOutput("map","100%", "400px"),
                             # --- new not -- do not forget the comma above!
-                                      h2("ZIP explorer"),
-                                      
-                                      selectInput("color", "Color", vars),
-                                      selectInput("size", "Size", vars, selected = "quantity"),
-                                      conditionalPanel("input.color == 'records' || input.size == 'records'",
-                                                       # Only prompt for threshold when coloring or sizing by records
-                                                       numericInput("threshold", "SuperZIP threshold (top n percentile)", 5)
-                                      ),
-                                      
-                                      plotOutput("histCentile", height = 200),
-                                      plotOutput("scatterCollegeIncome", height = 250)
-                        
+                            br(),
+                            fluidRow(
+                              column(width = 4,
+                                     selectInput("color", "Color", vars),
+                                     selectInput("size", "Size", vars, selected = "quantity"),
+                                     conditionalPanel("input.color == 'records' || input.size == 'records'",
+                                                      # Only prompt for threshold when coloring or sizing by records
+                                                      numericInput("threshold", "Cumulative Frequency threshold", 30)
+                                     )
+                              ),
+                              column(width = 8,
+                                     plotOutput("histCentile", height = 200)
+                              )
+                            ),
+                            column(width = 12,
+                                   plotOutput("scatterCollegeIncome", height = 250))
                             # --- new
                      )
                    ),
@@ -93,10 +97,10 @@ fluidPage(theme = "bootstrap.css",
                    ),
                    fluidRow(
                      column(width = 4,
-                            h4("2These changes have increased wealth inequality significantly. In 1963, families near the top had six times the wealth (or, $6 for every $1) of families in the middle. By 2013, they had 12 times the wealth of families in the middle.")
+                            h4("2Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
                      ),
                      column(width = 8,
-                            h4("3These changes have increased wealth inequality significantly. In 1963, families near the top had six times the wealth (or, $6 for every $1) of families in the middle. By 2013, they had 12 times the wealth of families in the middle."),
+                            h4("3Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
                             tags$code("Tidy data sets are all the same. Each messy data set is messy in its own way.", cite = "Hadley Wickham")
                      )
                    ),

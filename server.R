@@ -1,8 +1,9 @@
-library(leaflet)
-library(RColorBrewer)
-library(scales)
-library(lattice)
-library(dplyr)
+library("leaflet")
+library("RColorBrewer")
+library("scales")
+library("lattice")
+library("dplyr")
+library("ggplot2")
 
 # allow uploading large files ---
 if(Sys.getenv('SHINY_PORT') == "") options(shiny.maxRequestSize=10000*1024^2)
@@ -15,10 +16,10 @@ function(input, output, session) {
   output$map <- renderLeaflet({
     leaflet() %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
-      setView(lng = 0, lat = 37.45, zoom = 3)
+      setView(lng = 5, lat = 47.45, zoom = 4)
   })
   # --- new
-   # A reactive expression that returns the set of zips that are
+  # A reactive expression that returns the set of zips that are
   # in bounds right now
   zipsInBounds <- reactive({
     if (is.null(input$map_bounds))
@@ -40,13 +41,13 @@ function(input, output, session) {
     if (nrow(zipsInBounds()) == 0)
       return(NULL)
     
-    hist(zipsInBounds()$cumulfreqnum,
-         breaks = centileBreaks,
-         main = "records score (visible zips)",
-         xlab = "Percentile",
-         xlim = range(data1$cumulfreqnum),
-         col = '#00DD00',
-         border = 'white')
+    ggplot(data=zipsInBounds(), aes(zipsInBounds()$cumulfreqnum)) + 
+      geom_histogram(aes(y =..density..), 
+                     breaks=centileBreaks, 
+                     alpha = .2) + 
+      geom_density(col=2) + 
+      labs(title="Cumulative Frequency (visible countries)") +
+      labs(x="Cumulative Frequency of Quantity", y="Count")
   })
   
   output$scatterCollegeIncome <- renderPlot({
@@ -54,7 +55,7 @@ function(input, output, session) {
     if (nrow(zipsInBounds()) == 0)
       return(NULL)
     
-    print(xyplot(quantity ~ cnt, data = zipsInBounds(), xlim = range(data1$cnt), ylim = range(data1$quantity)))
+    ggplot(zipsInBounds(), aes(x=cnt, y=quantity, color=cumulfreqnum)) + geom_point() + geom_rug()
   })
   
   # This observer is responsible for maintaining the circles and legend,
@@ -75,9 +76,9 @@ function(input, output, session) {
     
     if (sizeBy == "records") {
       # Radius is treated specially in the "records" case.
-      radius <- ifelse(data1$cumulfreqnum >= (100 - input$threshold), 30000, 3000)
+      radius <- ifelse(data1$cumulfreqnum >= (100 - input$threshold), 300000, 30000)
     } else {
-      radius <- data1[[sizeBy]] / max(data1[[sizeBy]]) * 30000
+      radius <- data1[[sizeBy]] / max(data1[[sizeBy]]) * 600000
     }
     
     leafletProxy("map", data = data1) %>%
@@ -92,12 +93,10 @@ function(input, output, session) {
   showZipcodePopup <- function(country, lat, lng) {
     selectedZip <- data1[data1$country == country,]
     content <- as.character(tagList(
-      tags$h4("Score:", as.integer(selectedZip$cumulfreqnum)),
-      tags$strong(HTML(sprintf("%s, %s %s",
-                               selectedZip$country, selectedZip$country, selectedZip$country
-      ))), tags$br(),
-      sprintf("Median household quantity: %s", dollar(selectedZip$quantity * 1000)), tags$br(),
-      sprintf("Percent of adults with BA: %s%%", as.integer(selectedZip$cnt)), tags$br()
+      tags$h4(tags$strong(HTML(sprintf("%s",selectedZip$country)))), tags$br(),
+      sprintf("Cumulative Frequency: %s", as.integer(selectedZip$cumulfreqnum)), tags$br(),
+      sprintf("Total quantity of olives: %s kg", format(as.integer(selectedZip$quantity), big.mark=",", scientific=FALSE)), tags$br(),
+      sprintf("Total number of orders: %s", format(as.integer(selectedZip$cnt), big.mark=",", scientific=FALSE)), tags$br()
     ))
     leafletProxy("map") %>% addPopups(lng, lat, content, layerId = country)
   }
