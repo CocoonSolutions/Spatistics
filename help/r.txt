@@ -64,3 +64,20 @@ tabPanel("Import Data",
                                 )
                               )
                      )
+					 
+-- execute sql in dataframes
+> library(sqldf)
+> data1 = sqldf("select data.countryname2, data.lon, data.lat, count(*) cnt, sum(data.quantity) from data group by data.countryname2, data.lon, data.lat order by  sum(data.quantity)")
+-- add column depending on existing column
+> data1$records<-ifelse(data1$cnt<10000,0,1)
+-- add cumulative quantity
+> data1$cumul=cumsum(data1$quantity)
+-- add cumulative quantity frequency as character
+> data1$cumulfreq = sprintf("%10.10f",100*data1$cumul/sum(data1$quantity))
+-- add cumulative quantity frequency as numeric
+> data1$cumulfreqnum = 100*data1$cumul/sum(data1$quantity)
+> data1$cumulfreqnum = as.numeric(format(round(a, 2), nsmall = 2))
+
+-- save and load rds
+> saveRDS(data1, "C:/Users/PC001/Desktop/StoryTelling/gitRepo/data/data1.rds")
+> data1 = readRDS("C:/Users/PC001/Desktop/StoryTelling/gitRepo/data/data1.rds")

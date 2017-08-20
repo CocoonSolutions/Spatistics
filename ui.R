@@ -1,5 +1,15 @@
 library(leaflet)
 
+# --- new
+# Choices for drop-downs
+vars <- c(
+  "Max Quantity" = "records",
+  "Cumulative Frequency" = "cumulfreqnum",
+  "Quantity" = "quantity",
+  "Count of Records" = "cnt"
+)
+# --- new
+
 fluidPage(theme = "bootstrap.css",
           
           # Include our custom CSS  and js ---
@@ -52,7 +62,21 @@ fluidPage(theme = "bootstrap.css",
                      ),
                      column(width = 8,
                             h4("3These changes have increased wealth inequality significantly. In 1963, families near the top had six times the wealth (or, $6 for every $1) of families in the middle. By 2013, they had 12 times the wealth of families in the middle."),
-                            leafletOutput("map","100%", "400px")
+                            leafletOutput("map","100%", "400px"),
+                            # --- new not -- do not forget the comma above!
+                                      h2("ZIP explorer"),
+                                      
+                                      selectInput("color", "Color", vars),
+                                      selectInput("size", "Size", vars, selected = "quantity"),
+                                      conditionalPanel("input.color == 'records' || input.size == 'records'",
+                                                       # Only prompt for threshold when coloring or sizing by records
+                                                       numericInput("threshold", "SuperZIP threshold (top n percentile)", 5)
+                                      ),
+                                      
+                                      plotOutput("histCentile", height = 200),
+                                      plotOutput("scatterCollegeIncome", height = 250)
+                        
+                            # --- new
                      )
                    ),
                    # ----------------------------------------
