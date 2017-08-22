@@ -6,7 +6,7 @@ vars <- c(
   "Top Countries" = "records",
   "Cumulative Frequency of Quantity" = "cumulfreqnum",
   "Sum of Quantity" = "quantity",
-  "Count of Records" = "cnt"
+  "Total Number of Orders" = "cnt"
 )
 # --- new
 

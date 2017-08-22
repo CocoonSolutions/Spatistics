@@ -184,3 +184,64 @@ create table data1trans3 as
 select *
 from data1trans2 a
 where issueyear <> '2017';
+
+-- http://data.worldbank.org/indicator/SP.POP.TOTL Population, total
+-- http://data.worldbank.org/indicator/NY.GDP.PCAP.CD GDP per capita (current US$)
+
+CREATE TABLE public.datacountry
+(
+  pk serial not null primary key,
+Country character varying(100),
+Code character varying(100),
+pop2013 double precision,
+pop2014 double precision,
+pop2015 double precision,
+pop2016 double precision,
+Country2 character varying(100),
+Code2 character varying(100),
+gdp2013 double precision,
+gdp2014 double precision,
+gdp2015 double precision,
+gdp2016 double precision
+);
+
+alter table datacountry
+add column countryname2 character varying(256);
+
+update datacountry
+set countryname2 =
+ case
+	when country = 'Russian Federation' then 'Russia'
+	when country = 'Macedonia, FYR' then 'Macedonia [FYROM]'
+ 	else country 
+ end; 
+
+ -- evaluate joins among datacountries, data1trans3 and datacountry
+ select a.name, b.countryname2, c.countryname2
+from datacountries a
+join (select distinct countryname2 from data1trans3) b on a.name = b.countryname2
+left join datacountry c on a.name = c.countryname2;
+
+update datacountry
+set gdp2016 = 40668.82
+where countryname2 = 'Kuwait';
+
+create table datacountries2 as
+select a.latitude,
+a.longtitude,
+a.name countryname2,
+a.country2,
+c.country,
+c.code,
+c.pop2013,
+c.pop2014,
+c.pop2015,
+c.pop2016,
+c.code2,
+c.gdp2013,
+c.gdp2014,
+c.gdp2015,
+c.gdp2016
+from datacountries a
+join (select distinct countryname2 from data1trans3) b on a.name = b.countryname2
+left join datacountry c on a.name = c.countryname2;

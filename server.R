@@ -23,18 +23,18 @@ function(input, output, session) {
   # in bounds right now
   zipsInBounds <- reactive({
     if (is.null(input$map_bounds))
-      return(data1[FALSE,])
+      return(datacountries[FALSE,])
     bounds <- input$map_bounds
     latRng <- range(bounds$north, bounds$south)
     lngRng <- range(bounds$east, bounds$west)
     
-    subset(data1,
+    subset(datacountries,
            lat >= latRng[1] & lat <= latRng[2] &
              lon >= lngRng[1] & lon <= lngRng[2])
   })
   
   # Precalculate the breaks we'll need for the two histograms
-  centileBreaks <- hist(plot = FALSE, data1$cumulfreqnum, breaks = 20)$breaks
+  centileBreaks <- hist(plot = FALSE, datacountries$cumulfreqnum, breaks = 20)$breaks
   
   output$histCentile <- renderPlot({
     # If no zipcodes are in view, don't plot
@@ -42,8 +42,7 @@ function(input, output, session) {
       return(NULL)
     
     ggplot(data=zipsInBounds(), aes(zipsInBounds()$cumulfreqnum)) + 
-      geom_histogram(aes(y =..density..), 
-                     breaks=centileBreaks, 
+      geom_histogram(breaks=centileBreaks, 
                      alpha = .2) + 
       geom_density(col=2) + 
       labs(title="Cumulative Frequency (visible countries)") +
@@ -55,7 +54,7 @@ function(input, output, session) {
     if (nrow(zipsInBounds()) == 0)
       return(NULL)
     
-    ggplot(zipsInBounds(), aes(x=cnt, y=quantity, color=cumulfreqnum)) + geom_point() + geom_rug()
+    ggplot(zipsInBounds(), aes(x=cnt, y=quantity, color=cumulfreqnum)) + geom_point() + geom_rug() + xlab("Total Number of Orders")
   })
   
   # This observer is responsible for maintaining the circles and legend,
@@ -67,21 +66,21 @@ function(input, output, session) {
     if (colorBy == "records") {
       # Color and palette are treated specially in the "records" case, because
       # the values are categorical instead of continuous.
-      colorData <- ifelse(data1$cumulfreqnum >= (100 - input$threshold), "yes", "no")
+      colorData <- ifelse(datacountries$cumulfreqnum >= (100 - input$threshold), "yes", "no")
       pal <- colorFactor("viridis", colorData)
     } else {
-      colorData <- data1[[colorBy]]
+      colorData <- datacountries[[colorBy]]
       pal <- colorBin("viridis", colorData, 7, pretty = FALSE)
     }
     
     if (sizeBy == "records") {
       # Radius is treated specially in the "records" case.
-      radius <- ifelse(data1$cumulfreqnum >= (100 - input$threshold), 300000, 30000)
+      radius <- ifelse(datacountries$cumulfreqnum >= (100 - input$threshold), 300000, 30000)
     } else {
-      radius <- data1[[sizeBy]] / max(data1[[sizeBy]]) * 600000
+      radius <- datacountries[[sizeBy]] / max(datacountries[[sizeBy]]) * 600000
     }
     
-    leafletProxy("map", data = data1) %>%
+    leafletProxy("map", data = datacountries) %>%
       clearShapes() %>%
       addCircles(~lon, ~lat, radius=radius, layerId=~country,
                  stroke=FALSE, fillOpacity=0.4, fillColor=pal(colorData)) %>%
@@ -91,7 +90,7 @@ function(input, output, session) {
   
   # Show a popup at the given location
   showZipcodePopup <- function(country, lat, lng) {
-    selectedZip <- data1[data1$country == country,]
+    selectedZip <- datacountries[datacountries$country == country,]
     content <- as.character(tagList(
       tags$h4(tags$strong(HTML(sprintf("%s",selectedZip$country)))), tags$br(),
       sprintf("Cumulative Frequency: %s", as.integer(selectedZip$cumulfreqnum)), tags$br(),
