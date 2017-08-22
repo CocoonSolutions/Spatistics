@@ -3,9 +3,9 @@ title:
 account: spatistics
 server: shinyapps.io
 appId: 171281
-bundleId: 949081
+bundleId: 949109
 url: https://spatistics.shinyapps.io/spatistics/
-when: 1503365836.34291
+when: 1503368552.23862
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: help/git.txt|help/r.txt

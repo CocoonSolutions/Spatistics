@@ -120,3 +120,5 @@ sqldf will default to using PostgreSQL
 > saveRDS(datacountries, "C:/Users/PC001/Desktop/StoryTelling/gitRepo/data/datacountries.rds")
 > datacountries = readRDS("C:/Users/PC001/Desktop/StoryTelling/gitRepo/data/datacountries.rds")
 
+-- clear r variables
+> rm(list= ls()[!(ls() %in% c('data'))])
