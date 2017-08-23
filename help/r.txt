@@ -78,43 +78,7 @@ tabPanel("Import Data",
 > data1$cumulfreqnum = 100*data1$cumul/sum(data1$quantity)
 > data1$cumulfreqnum = as.numeric(format(round(a, 2), nsmall = 2))
 
--- read data from postgres
-> install.packages("RPostgreSQL")
-trying URL 'https://cran.rstudio.com/bin/windows/contrib/3.3/RPostgreSQL_0.6-2.zip'
-Content type 'application/zip' length 433318 bytes (423 KB)
-downloaded 423 KB
 
-package ‘RPostgreSQL’ successfully unpacked and MD5 sums checked
-
-The downloaded binary packages are in
-	C:\Users\PC001\AppData\Local\Temp\Rtmp86jrzy\downloaded_packages
-> library(RPostgreSQL)
-Loading required package: DBI
-> drv <- dbDriver("PostgreSQL")
-> con <- dbConnect(drv, dbname = "project2",
-                  host = "localhost", port = 5432,
-                  user = "postgres", password = "postgres")
-> dbListTables(con)
- [1] "spatial_ref_sys"   "topology"          "layer"             "ais_week2"        
- [5] "ais_week2_vessels" "ais_static"        "lux_1_151_026"     "lux2_1_151_026"   
- [9] "lux3_1_151_026"    "lux1_1_151_026"    "sent"              "ub"               
-[13] "resp1"             "resp"              "data"              "datamodel"        
-[17] "data1"             "data1clean"        "data1trans"        "datacountries"    
-[21] "data1trans2"       "data1trans3"       "datacountry"       "datacountries2"   
-> countrystats = dbReadTable(con, "datacountries2")
-> View(countrystats)
-> dbDisconnect(con)
-[1] TRUE
-
--- transform data using library(sqldf)
-> library(sqldf)
-Loading required package: gsubfn
-Loading required package: proto
-Loading required package: RSQLite
-sqldf will default to using PostgreSQL
-> datacountries = sqldf("select a.*, b.code, b.pop2013, b.pop2014, b.pop2015, b.pop2016, b.gdp2013, b.gdp2014, b.gdp2015, b.gdp2016
-	from data1 a
-	join countrystats b on a.country = b.countryname2")
 
 -- save and load rds
 > saveRDS(datacountries, "C:/Users/PC001/Desktop/StoryTelling/gitRepo/data/datacountries.rds")
@@ -122,3 +86,24 @@ sqldf will default to using PostgreSQL
 
 -- clear r variables
 > rm(list= ls()[!(ls() %in% c('data'))])
+
+
+-- CREATE DATA INPUT 1 --
+> library(RPostgreSQL)
+Loading required package: DBI
+> drv <- dbDriver("PostgreSQL")
+> con <- dbConnect(drv, dbname = "project2",
+                   host = "localhost", port = 5432,
+                   user = "postgres", password = "postgres")
+> datainput1 = dbGetQuery(con, "select a.*, b.cnt, b.sales_q, b.sales_c from data2country a join (select country, count(*) cnt, sum(sales_c) sales_c, sum(sales_q) sales_q from data2trans1 group by country) b on upper(a.country2) = b.country")
+> dbDisconnect(con)
+
+-- order
+> datainput1 = datainput1[order(datainput1$sales_c),]
+-- add cumulative 
+> datainput1$cumul=cumsum(datainput1$sales_c)
+-- add cumulative frequency as character
+> datainput1$cumulfreqnum = 100*datainput1$cumul/sum(datainput1$sales_c)
+> datainput1$cumulfreqnum = as.numeric(format(round(datainput1$cumulfreqnum, 2), nsmall = 2))
+
+> saveRDS(datainput1, "C:/Users/PC001/Desktop/StoryTelling/gitRepo/data/datainput1.rds")

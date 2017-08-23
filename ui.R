@@ -3,9 +3,9 @@ library("leaflet")
 # --- new
 # Choices for drop-downs
 vars <- c(
-  "Top Countries" = "records",
-  "Cumulative Frequency of Quantity" = "cumulfreqnum",
-  "Sum of Quantity" = "quantity",
+  "Quantity" = "sales_q",
+  "Cumulative Frequency of Sales" = "cumulfreqnum",
+  "Sales" = "sales_c",
   "Total Number of Orders" = "cnt"
 )
 # --- new
@@ -67,11 +67,11 @@ fluidPage(theme = "bootstrap.css",
                             br(),
                             fluidRow(
                               column(width = 4,
-                                     selectInput("color", "Color", vars),
-                                     selectInput("size", "Size", vars, selected = "quantity"),
-                                     conditionalPanel("input.color == 'records' || input.size == 'records'",
-                                                      # Only prompt for threshold when coloring or sizing by records
-                                                      numericInput("threshold", "Cumulative Frequency threshold", 30)
+                                     selectInput("color", "Color", vars, selected = "cnt"),
+                                     selectInput("size", "Size", vars, selected = "sales_c"),
+                                     conditionalPanel("input.color == 'cumulfreqnum'",
+                                                      # Only prompt for threshold when coloring or sizing by sales_q
+                                                      numericInput("threshold", "Cumulative Sales threshold", 50)
                                      )
                               ),
                               column(width = 8,

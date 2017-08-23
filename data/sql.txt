@@ -245,3 +245,90 @@ c.gdp2016
 from datacountries a
 join (select distinct countryname2 from data1trans3) b on a.name = b.countryname2
 left join datacountry c on a.name = c.countryname2;
+
+--------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+
+-- data2
+CREATE TABLE public.data2
+(
+ pk serial NOT NULL PRIMARY KEY,
+ Item_Brand character varying(256),
+ Item_Line character varying(256),
+ Item_Statistical character varying(256),
+ country character varying(256),
+ Quarter character varying(256),
+ Sales_Q double precision,
+ Sales_C double precision,
+ issuedate date
+)
+WITH (
+ OIDS=FALSE
+);
+ALTER TABLE public.data2
+ OWNER TO postgres;
+ 
+-- import csv utf8
+
+-- data2clean
+create table data2clean as  
+select item_line productline, item_statistical productcat, country, issuedate, sum(sales_q) sales_q, sum(sales_c) sales_c from data2
+where sales_c is not null and sales_c > 0
+and sales_q is not null and sales_q > 0
+group by item_line, item_statistical, country, issuedate;
+
+-- data2trans1
+create table data2trans1 as
+select 
+ issuedate,
+ case
+   when productline = 'ΦΡΕΣΚΑ' then 'Fresh'
+   when productline = 'ΚΑΤΕΨΥΓΜΕΝΑ' then 'Processed'
+ 	else 'N/A' 
+ end as productline,
+ case 
+when productcat = 'ΛΙΘΡΙΝΙ' then 'Pandora'
+when productcat = 'ΜΥΛΟΚΟΠΙ' then 'Shi drum'
+when productcat = 'ΦΑΓΚΡΙ' then 'Red seabream'
+when productcat = 'ΛΑΥΡΑΚΙ' then 'Seabass'
+when productcat = 'ΤΣΙΠΟΥΡΑ' then 'Seabream'
+when productcat = 'ΣΑΡΓΟΣ' then 'White seabream'
+when productcat = 'ΜΥΤΑΚΙ' then 'Sharpsnout bream'
+when productcat = 'ΚΡΑΝΙΟ' then 'Meagre'
+else 'N/A' end,
+ country,
+ Sales_C,
+ Sales_q,
+to_char(issuedate, 'YYYY') issueyear, 
+to_char(issuedate, 'MM') issuemonth, 
+to_char(issuedate, 'day') issueday,
+to_char(issuedate, 'YYYY-MM') issueyearmon
+from data2clean
+where to_char(issuedate, 'YYYY') <> '2017';
+
+-- validate lon lat with datacountries source table
+select upper(b.country2), a.country from datacountries b
+right join (
+select distinct country from data2trans1) a
+on upper(b.country2) = a.country;
+
+create table data2country as
+select a.latitude,
+a.longtitude,
+a.name countryname2,
+a.country2,
+c.country,
+c.code,
+c.pop2013,
+c.pop2014,
+c.pop2015,
+c.pop2016,
+c.code2,
+c.gdp2013,
+c.gdp2014,
+c.gdp2015,
+c.gdp2016
+from datacountries a
+join (select distinct country from data2trans1) b on upper(a.country2) = b.country
+left join datacountry c on a.name = c.countryname2;
+

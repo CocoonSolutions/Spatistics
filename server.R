@@ -23,18 +23,18 @@ function(input, output, session) {
   # in bounds right now
   zipsInBounds <- reactive({
     if (is.null(input$map_bounds))
-      return(datacountries[FALSE,])
+      return(datainput1[FALSE,])
     bounds <- input$map_bounds
     latRng <- range(bounds$north, bounds$south)
     lngRng <- range(bounds$east, bounds$west)
     
-    subset(datacountries,
-           lat >= latRng[1] & lat <= latRng[2] &
-             lon >= lngRng[1] & lon <= lngRng[2])
+    subset(datainput1,
+           latitude >= latRng[1] & latitude <= latRng[2] &
+             longtitude >= lngRng[1] & longtitude <= lngRng[2])
   })
   
   # Precalculate the breaks we'll need for the two histograms
-  centileBreaks <- hist(plot = FALSE, datacountries$cumulfreqnum, breaks = 20)$breaks
+  centileBreaks <- hist(plot = FALSE, datainput1$cumulfreqnum, breaks = 20)$breaks
   
   output$histCentile <- renderPlot({
     # If no zipcodes are in view, don't plot
@@ -46,7 +46,7 @@ function(input, output, session) {
                      alpha = .2) + 
       geom_density(col=2) + 
       labs(title="Cumulative Frequency (visible countries)") +
-      labs(x="Cumulative Frequency of Quantity", y="Count")
+      labs(x="Cumulative Frequency of Sales", y="Count")
   })
   
   output$scatterCollegeIncome <- renderPlot({
@@ -54,7 +54,7 @@ function(input, output, session) {
     if (nrow(zipsInBounds()) == 0)
       return(NULL)
     
-    ggplot(zipsInBounds(), aes(x=cnt, y=quantity, color=cumulfreqnum)) + geom_point() + geom_rug() + xlab("Total Number of Orders")
+    ggplot(zipsInBounds(), aes(x=cnt, y=sales_c, color=cumulfreqnum)) + geom_point() + geom_rug() + xlab("Total Number of Orders") + ylab("Total Sales")
   })
   
   # This observer is responsible for maintaining the circles and legend,
@@ -63,26 +63,21 @@ function(input, output, session) {
     colorBy <- input$color
     sizeBy <- input$size
     
-    if (colorBy == "records") {
-      # Color and palette are treated specially in the "records" case, because
+    if (colorBy == "cumulfreqnum") {
+      # Color and palette are treated specially in the "sales_q" case, because
       # the values are categorical instead of continuous.
-      colorData <- ifelse(datacountries$cumulfreqnum >= (100 - input$threshold), "yes", "no")
+      colorData <- ifelse(datainput1$cumulfreqnum >= input$threshold, "Over threshold", "Under threshold")
       pal <- colorFactor("viridis", colorData)
     } else {
-      colorData <- datacountries[[colorBy]]
+      colorData <- datainput1[[colorBy]]
       pal <- colorBin("viridis", colorData, 7, pretty = FALSE)
     }
     
-    if (sizeBy == "records") {
-      # Radius is treated specially in the "records" case.
-      radius <- ifelse(datacountries$cumulfreqnum >= (100 - input$threshold), 300000, 30000)
-    } else {
-      radius <- datacountries[[sizeBy]] / max(datacountries[[sizeBy]]) * 600000
-    }
+      radius <- datainput1[[sizeBy]] / max(datainput1[[sizeBy]]) * 600000
     
-    leafletProxy("map", data = datacountries) %>%
+    leafletProxy("map", data = datainput1) %>%
       clearShapes() %>%
-      addCircles(~lon, ~lat, radius=radius, layerId=~country,
+      addCircles(~longtitude, ~latitude, radius=radius, layerId=~country,
                  stroke=FALSE, fillOpacity=0.4, fillColor=pal(colorData)) %>%
       addLegend("bottomleft", pal=pal, values=colorData, title=colorBy,
                 layerId="colorLegend")
@@ -90,11 +85,12 @@ function(input, output, session) {
   
   # Show a popup at the given location
   showZipcodePopup <- function(country, lat, lng) {
-    selectedZip <- datacountries[datacountries$country == country,]
+    selectedZip <- datainput1[datainput1$country == country,]
     content <- as.character(tagList(
       tags$h4(tags$strong(HTML(sprintf("%s",selectedZip$country)))), tags$br(),
-      sprintf("Cumulative Frequency: %s", as.integer(selectedZip$cumulfreqnum)), tags$br(),
-      sprintf("Total quantity of olives: %s kg", format(as.integer(selectedZip$quantity), big.mark=",", scientific=FALSE)), tags$br(),
+      sprintf("Cumulative frequency: %s", as.integer(selectedZip$cumulfreqnum)), tags$br(),
+      sprintf("Total sales: %s euros", format(as.integer(selectedZip$sales_c), big.mark=",", scientific=FALSE)), tags$br(),
+      sprintf("Total sales quantity: %s kgs", format(as.integer(selectedZip$sales_q), big.mark=",", scientific=FALSE)), tags$br(),
       sprintf("Total number of orders: %s", format(as.integer(selectedZip$cnt), big.mark=",", scientific=FALSE)), tags$br()
     ))
     leafletProxy("map") %>% addPopups(lng, lat, content, layerId = country)
