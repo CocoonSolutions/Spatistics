@@ -332,3 +332,103 @@ from datacountries a
 join (select distinct country from data2trans1) b on upper(a.country2) = b.country
 left join datacountry c on a.name = c.countryname2;
 
+--------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+
+-- data3
+CREATE TABLE public.data3
+(
+ pk serial NOT NULL PRIMARY KEY,
+ DocumentGroupDesc character varying(256),
+ Country character varying(256),
+ ItemLine character varying(256),
+ ItemCategory character varying(256),
+ ItemStatisticalGroup character varying(256),
+ Size character varying(256),
+ Date date,
+ Quantity double precision,
+ Sales double precision
+)
+WITH (
+ OIDS=FALSE
+);
+ALTER TABLE public.data3
+ OWNER TO postgres;
+ 
+-- import csv utf8
+
+-- data3clean
+create table data3clean as
+select * from data3;
+
+update data3clean
+set itemcategory = 'ΟΛΟΚΛΗΡΑ'
+where itemcategory is null;
+
+update data3clean
+set Size =
+ case
+   when Size = '1500-2000' and ItemStatisticalGroup = 'ΚΡΑΝΙΟ' then '1000-2000'
+   when Size in ('ΤΥΠΟΥ Β''','ΤΥΠΟΥ  Δ') then 'STORTI'
+   when Size = '400 - 500' then '400-600'
+   when Size = '1500' and ItemStatisticalGroup = 'ΦΑΓΚΡΙ' then '1000-1500'
+   when Size = '600-1000' and ItemStatisticalGroup = 'ΦΑΓΚΡΙ' then '600-800'   
+ 	else Size 
+ end;
+ 
+-- data3trans1
+create table data3trans1 as
+select 
+ country,
+ case
+   when itemline = 'ΦΡΕΣΚΑ' then 'Fresh'
+   when itemline = 'ΚΑΤΕΨΥΓΜΕΝΑ' then 'Processed'
+ 	else 'N/A' 
+ end as itemline,
+ case
+	when ItemCategory = 'ΦΙΛΕΤΑ' then 'Fillet'
+	when ItemCategory = 'ΑΠΕΝΤΕΡΩΜΕΝΑ' then 'Gutted'
+	when ItemCategory = 'ΟΛΟΚΛΗΡΑ' then 'Whole'
+	else 'N/A' 
+end as ItemCategory,
+ case 
+when ItemStatisticalGroup = 'ΦΑΓΚΡΙ' then 'Red seabream'
+when ItemStatisticalGroup = 'ΛΑΥΡΑΚΙ' then 'Seabass'
+when ItemStatisticalGroup = 'ΤΣΙΠΟΥΡΑ' then 'Seabream'
+when ItemStatisticalGroup = 'ΚΡΑΝΙΟ' then 'Meagre'
+else 'N/A' 
+end as ItemGroup,
+ quantity,
+ sales,
+ date as issuedate,
+to_char(date, 'YYYY') issueyear, 
+to_char(date, 'MM') issuemonth, 
+to_char(date, 'day') issueday,
+to_char(date, 'YYYY-MM') issueyearmon
+from data3clean;
+
+-- validate lon lat with datacountries source table
+select upper(b.country2), a.country from datacountries b
+right join (
+select distinct country from data3trans1) a
+on upper(b.country2) = a.country;
+
+create table data3country as
+select a.latitude,
+a.longtitude,
+a.name countryname2,
+a.country2,
+c.country,
+c.code,
+c.pop2013,
+c.pop2014,
+c.pop2015,
+c.pop2016,
+c.code2,
+c.gdp2013,
+c.gdp2014,
+c.gdp2015,
+c.gdp2016
+from datacountries a
+join (select distinct country from data3trans1) b on upper(a.country2) = b.country
+left join datacountry c on a.name = c.countryname2;

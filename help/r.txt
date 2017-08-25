@@ -95,7 +95,7 @@ Loading required package: DBI
 > con <- dbConnect(drv, dbname = "project2",
                    host = "localhost", port = 5432,
                    user = "postgres", password = "postgres")
-> datainput1 = dbGetQuery(con, "select a.*, b.cnt, b.sales_q, b.sales_c from data2country a join (select country, count(*) cnt, sum(sales_c) sales_c, sum(sales_q) sales_q from data2trans1 group by country) b on upper(a.country2) = b.country")
+> datainput1 = dbGetQuery(con, "select a.*, b.cnt, b.sales_q, b.sales_c from data3country a join (select country, count(*) cnt, sum(sales) sales_c, sum(quantity) sales_q from data3trans1 where to_char(issuedate, 'YYYY') <> '2017' group by country) b on upper(a.country2) = b.country")
 > dbDisconnect(con)
 
 -- order
