@@ -44,3 +44,6 @@
 
 -- To allow push large files
 > git config http.postBuffer 524288000
+
+-- Unstage all staged files
+> git reset

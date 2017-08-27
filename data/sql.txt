@@ -283,7 +283,7 @@ select
  issuedate,
  case
    when productline = 'ΦΡΕΣΚΑ' then 'Fresh'
-   when productline = 'ΚΑΤΕΨΥΓΜΕΝΑ' then 'Processed'
+   when productline = 'ΚΑΤΕΨΥΓΜΕΝΑ' then 'Frozen'
  	else 'N/A' 
  end as productline,
  case 
@@ -382,7 +382,7 @@ select
  country,
  case
    when itemline = 'ΦΡΕΣΚΑ' then 'Fresh'
-   when itemline = 'ΚΑΤΕΨΥΓΜΕΝΑ' then 'Processed'
+   when itemline = 'ΚΑΤΕΨΥΓΜΕΝΑ' then 'Frozen'
  	else 'N/A' 
  end as itemline,
  case
@@ -398,6 +398,7 @@ when ItemStatisticalGroup = 'ΤΣΙΠΟΥΡΑ' then 'Seabream'
 when ItemStatisticalGroup = 'ΚΡΑΝΙΟ' then 'Meagre'
 else 'N/A' 
 end as ItemGroup,
+size itemSize,
  quantity,
  sales,
  date as issuedate,
