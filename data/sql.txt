@@ -408,6 +408,36 @@ to_char(date, 'day') issueday,
 to_char(date, 'YYYY-MM') issueyearmon
 from data3clean;
 
+-- data3trans2
+create table data3trans2 as
+select * from data3trans1;
+
+alter table data3trans2
+add column itemsizerank character varying(256);
+
+update data3trans2
+set itemsizerank =
+ case itemsize
+when 'SPECIALCUTS' then '00_SPECIALCUTS'
+when 'STORTI' then '01_STORTI'
+when '150-200' then '02_150-200'
+when '200-300' then '03_200-300'
+when '300-400' then '04_300-400'
+when '300-600' then '05_300-600'
+when '400-600' then '06_400-600'
+when '600-800' then '07_600-800'
+when '500-1000' then '08_500-1000'
+when '800-1000' then '09_800-1000'
+when '1000-1500' then '10_1000-1500'
+when '1000-2000' then '11_1000-2000'
+when '1500-2000' then '12_1500-2000'
+when '2000+' then '13_2000+'
+when '2000-3000' then '14_2000-3000'
+when '3000-4000' then '15_3000-4000'
+when '4000+' then '16_4000+'
+else 'N/A'
+end;
+
 -- validate lon lat with datacountries source table
 select upper(b.country2), a.country from datacountries b
 right join (

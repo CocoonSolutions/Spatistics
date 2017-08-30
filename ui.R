@@ -81,7 +81,6 @@ fluidPage(
             "3Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
           ),
           leafletOutput("map", "100%", "400px"),
-          # --- new not -- do not forget the comma above!
           br(),
           fluidRow(
             column(
@@ -99,7 +98,6 @@ fluidPage(
           ),
           column(width = 12,
                  plotOutput("scatterCollegeIncome", height = 250))
-          # --- new
         )
       ),
       # ----------------------------------------
@@ -128,6 +126,43 @@ fluidPage(
           "Force Network",
           forceNetworkOutput("force", width = "100%", height = "200px")
         ),
+        h4(
+          "2Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        )
+      )),
+      # ----------------------------------------
+      # Point 3 --------------------------------
+      # ----------------------------------------
+      fluidRow(column(
+        width = 12,
+        tags$h1("_____________", style = "color:#66a3ff; text-align:center; font-size: 20px;"),
+        h2(
+          span(". ", style = "background-color:#66a3ff; color:#66a3ff; font-size: 120%;"),
+          span("3 ", style = "background-color:#66a3ff; font-size: 120%; color:#ffffff;"),
+          span(".", style = "background-color:#66a3ff; color:#66a3ff; font-size: 120%;"),
+          span("-", style = "color:white; font-size: 120%;"),
+          "This is the main tiltle of the paragraph."
+        )
+      )),
+      fluidRow(column(
+        width = 4,
+        h4(
+          "3Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        )
+      ),
+      column(
+        width = 8,
+        h4(tags$ul(
+          tags$li(
+            "First list item First list item First list item First list item First list item"
+          ),
+          br(),
+          tags$li(
+            "Second list item First list item First list item First list item First list item First list item First list item First list item First list item First list item First list item"
+          ),
+          br(),
+          tags$li("Third list item")
+        )),
         h4(
           "3Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
         )
