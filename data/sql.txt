@@ -463,3 +463,10 @@ c.gdp2016
 from datacountries a
 join (select distinct country from data3trans1) b on upper(a.country2) = b.country
 left join datacountry c on a.name = c.countryname2;
+
+-- insert 5 dummy rows
+INSERT INTO data3trans2 VALUES ('GREECE', 'Fresh', 'Whole', 'Seabream', '2000+', 0, 0, '2013-01-01', '2013', '01', 'friday   ', '2013-01', '13_2000+' );
+INSERT INTO data3trans2 VALUES ('GREECE', 'Fresh', 'Whole', 'Seabream', '2000+', 0, 0, '2014-01-01', '2014', '01', 'friday   ', '2014-01', '13_2000+' );
+INSERT INTO data3trans2 VALUES ('GREECE', 'Fresh', 'Whole', 'Seabream', '2000+', 0, 0, '2014-01-01', '2015', '01', 'friday   ', '2015-01', '13_2000+' );
+INSERT INTO data3trans2 VALUES ('GREECE', 'Fresh', 'Whole', 'Seabream', 'SPECIALCUTS', 0, 0, '2015-01-01', '2015', '01', 'friday   ', '2015-01', '00_SPECIALCUTS' );
+INSERT INTO data3trans2 VALUES ('GREECE', 'Fresh', 'Whole', 'Seabream', '300-600', 0, 0, '2016-01-01', '2016', '01', 'friday   ', '2016-01', '05_300-600' );

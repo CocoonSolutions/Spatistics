@@ -1,26 +1,33 @@
+# https://stackoverflow.com/questions/29423602/unused-argument-error-with-offset-in-column-for-shiny
+library(shiny)
+
+library(googleCharts)
+
+## if (!require(devtools))
+##   install.packages("devtools")
+## devtools::install_github("jbkunst/highcharter")
+
 library("leaflet")
-
 library('networkD3')
+library("highcharter")
 
-# --- new
 # Choices for drop-downs
 vars <- c(
   "Quantity" = "sales_q",
-  "Cumulative Frequency of Sales" = "cumulfreqnum",
+  "Sales Cumulative Freq" = "cumulfreqnum",
   "Sales" = "sales_c",
-  "Total Number of Orders" = "cnt"
+  "Total Number of Orders" = "cnt",
+  "Population 2016" = "pop2016",
+  "GDP 2016" = "gdp2016"
 )
-# --- new
 
-fluidPage(
+shinyUI(fluidPage(
   theme = "bootstrap.css",
   
-  # Include our custom CSS  and js ---
-  tags$head(#includeCSS("styles.css"),
-    includeScript("gomap.js")),
+  includeScript("gomap.js"),
   
   # 1 ---
-  fluidRow(column(
+  fluidRow(shiny::column(
     width = 12,
     img(
       src = "Untitled-3.jpg",
@@ -32,10 +39,10 @@ fluidPage(
   
   # 2 ---
   fluidRow(
-    column(width = 1),
+    shiny::column(width = 1),
     
     # 2.1 ---
-    column(
+    shiny::column(
       width = 10,
       h2("This is the main tiltle of the story."),
       h4(
@@ -46,7 +53,7 @@ fluidPage(
       # ----------------------------------------
       # Point 1 --------------------------------
       # ----------------------------------------
-      fluidRow(column(
+      fluidRow(shiny::column(
         width = 12,
         tags$h1("_____________", style = "color:#66a3ff; text-align:center; font-size: 20px;"),
         h2(
@@ -58,7 +65,7 @@ fluidPage(
         )
       )),
       fluidRow(
-        column(
+        shiny::column(
           width = 4,
           h4(
             "2Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
@@ -75,7 +82,7 @@ fluidPage(
             tags$li("Third list item")
           ))
         ),
-        column(
+        shiny::column(
           width = 8,
           h4(
             "3Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
@@ -83,7 +90,7 @@ fluidPage(
           leafletOutput("map", "100%", "400px"),
           br(),
           fluidRow(
-            column(
+            shiny::column(
               width = 4,
               selectInput("color", "Color", vars, selected = "cnt"),
               selectInput("size", "Size", vars, selected = "sales_c"),
@@ -93,17 +100,17 @@ fluidPage(
                 numericInput("threshold", "Cumulative Sales threshold", 50)
               )
             ),
-            column(width = 8,
-                   plotOutput("histCentile", height = 200))
+            shiny::column(width = 8,
+                          plotOutput("histCentile", height = 200))
           ),
-          column(width = 12,
-                 plotOutput("scatterCollegeIncome", height = 250))
+          shiny::column(width = 12,
+                        plotOutput("scatterCollegeIncome", height = 250))
         )
       ),
       # ----------------------------------------
       # Point 2 --------------------------------
       # ----------------------------------------
-      fluidRow(column(
+      fluidRow(shiny::column(
         width = 12,
         tags$h1("_____________", style = "color:#66a3ff; text-align:center; font-size: 20px;"),
         h2(
@@ -114,26 +121,28 @@ fluidPage(
           "This is the main tiltle of the paragraph."
         )
       )),
-      fluidRow(column(
-        width = 4,
-        h4(
-          "2Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      fluidRow(
+        shiny::column(
+          width = 4,
+          h4(
+            "2Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+          )
+        ),
+        shiny::column(
+          width = 8,
+          tabPanel(
+            "Force Network",
+            forceNetworkOutput("force", width = "100%", height = "200px")
+          ),
+          h4(
+            "2Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+          )
         )
       ),
-      column(
-        width = 8,
-        tabPanel(
-          "Force Network",
-          forceNetworkOutput("force", width = "100%", height = "200px")
-        ),
-        h4(
-          "2Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        )
-      )),
       # ----------------------------------------
       # Point 3 --------------------------------
       # ----------------------------------------
-      fluidRow(column(
+      fluidRow(shiny::column(
         width = 12,
         tags$h1("_____________", style = "color:#66a3ff; text-align:center; font-size: 20px;"),
         h2(
@@ -144,34 +153,81 @@ fluidPage(
           "This is the main tiltle of the paragraph."
         )
       )),
-      fluidRow(column(
-        width = 4,
-        h4(
-          "3Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      fluidRow(
+        shiny::column(
+          width = 4,
+          h4(
+            "3Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+          )
+        ),
+        shiny::column(
+          width = 8,
+          h4(tags$ul(
+            tags$li(
+              "First list item First list item First list item First list item First list item"
+            ),
+            br(),
+            tags$li(
+              "Second list item First list item First list item First list item First list item First list item First list item First list item First list item First list item First list item"
+            ),
+            br(),
+            tags$li("Third list item")
+          )),
+          h4(
+            "3Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+          )
+          ,
+          highchartOutput("hcontainer", height = "500px"),
+          br()
+          ,
+          fluidRow(
+            shiny::column(
+              width = 5,
+              align = "center",
+              sliderInput(
+                "year",
+                label = "Year",
+                min = min(years),
+                max = max(years),
+                step = 1,
+                sep = "",
+                value = min(years),
+                animate = animationOptions(interval = 2500, loop = TRUE)
+              )
+            ),
+            shiny::column(
+              width = 3,
+              align = "center",
+              selectInput(
+                "plot_type",
+                selected = "line",
+                label = "Plot type",
+                choices = c(
+                  "Scatter" = "scatter",
+                  "Bar" = "column",
+                  "Line" = "line"
+                )
+              )
+            ),
+            shiny::column(
+              width = 3,
+              align = "center",
+              selectInput(
+                "metric",
+                selected = "sales",
+                label = "Metric",
+                choices = c("Total sales" = "sales",
+                            "Total quantity" = "quantity")
+              )
+            )
+          )
         )
       ),
-      column(
-        width = 8,
-        h4(tags$ul(
-          tags$li(
-            "First list item First list item First list item First list item First list item"
-          ),
-          br(),
-          tags$li(
-            "Second list item First list item First list item First list item First list item First list item First list item First list item First list item First list item First list item"
-          ),
-          br(),
-          tags$li("Third list item")
-        )),
-        h4(
-          "3Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        )
-      )),
       # ----------------------------------------
       # Conclusion -----------------------------
       # ----------------------------------------
       fluidRow(
-        column(
+        shiny::column(
           width = 12,
           tags$h1("_____________", style = "color:#66a3ff; text-align:center; font-size: 20px;"),
           h2(
@@ -202,10 +258,10 @@ fluidPage(
         )
       )
     ),
-    column(width = 1)
+    shiny::column(width = 1)
   ),
   # 3 ---
-  fluidRow(column(
+  fluidRow(shiny::column(
     width = 12,
     img(
       src = "Untitled-4.jpg",
@@ -213,4 +269,4 @@ fluidPage(
       width = "100%"
     )
   ))
-)
+))

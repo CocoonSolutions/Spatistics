@@ -6,23 +6,24 @@ library("dplyr")
 library("ggplot2")
 
 library('networkD3')
+library("highcharter")
 
 # allow uploading large files ---
 if (Sys.getenv('SHINY_PORT') == "")
   options(shiny.maxRequestSize = 10000 * 1024 ^ 2)
 
-function(input, output, session) {
+shinyServer(function(input, output, session) {
   # Map integration ------------------------------
   
   # Create and render map ---
   output$map <- renderLeaflet({
     leaflet() %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
-      setView(lng = 5,
+      setView(lng = -1,
               lat = 47.45,
               zoom = 4)
   })
-  # --- new
+  
   # A reactive expression that returns the set of zips that are
   # in bounds right now
   zipsInBounds <- reactive({
@@ -53,7 +54,6 @@ function(input, output, session) {
     ggplot(data = zipsInBounds(), aes(zipsInBounds()$cumulfreqnum)) +
       geom_histogram(breaks = centileBreaks,
                      alpha = .2) +
-      geom_density(col = 2) +
       labs(title = "Cumulative Frequency (visible countries)") +
       labs(x = "Cumulative Frequency of Sales", y = "Count")
   })
@@ -63,7 +63,8 @@ function(input, output, session) {
     if (nrow(zipsInBounds()) == 0)
       return(NULL)
     
-    ggplot(zipsInBounds(), aes(x = cnt, y = sales_c, color = cumulfreqnum)) + geom_point() + geom_rug() + xlab("Total Number of Orders") + ylab("Total Sales")
+    ggplot(zipsInBounds(),
+           aes(x = sales_q, y = sales_c, color = cumulfreqnum)) + geom_point() + geom_rug() + xlab("Total Quantity") + ylab("Total Sales")
   })
   
   # This observer is responsible for maintaining the circles and legend,
@@ -81,10 +82,12 @@ function(input, output, session) {
           "Over threshold",
           "Under threshold"
         )
-      pal <- colorFactor("viridis", colorData)
+      pal <-
+        colorFactor("plasma", colorData) # "viridis", "magma", "inferno", or "plasma"
     } else {
       colorData <- datainput1[[colorBy]]
-      pal <- colorBin("viridis", colorData, 7, pretty = FALSE)
+      pal <-
+        colorBin("plasma", colorData, 7, pretty = FALSE) # "viridis", "magma", "inferno", or "plasma"
     }
     
     radius <-
@@ -120,7 +123,7 @@ function(input, output, session) {
         ))),
         tags$br(),
         sprintf(
-          "Cumulative frequency: %s",
+          "Cumulative frequency of Sales: %s",
           as.integer(selectedZip$cumulfreqnum)
         ),
         tags$br(),
@@ -146,6 +149,25 @@ function(input, output, session) {
           "Total number of orders: %s",
           format(
             as.integer(selectedZip$cnt),
+            big.mark = ",",
+            scientific = FALSE
+          )
+        ),
+        tags$br(),
+        tags$br(),
+        sprintf(
+          "Population 2016: %s people",
+          format(
+            as.integer(selectedZip$pop2016),
+            big.mark = ",",
+            scientific = FALSE
+          )
+        ),
+        tags$br(),
+        sprintf(
+          "Gross Domestic Product 2016: %s euros",
+          format(
+            as.integer(selectedZip$gdp2016),
             big.mark = ",",
             scientific = FALSE
           )
@@ -186,9 +208,124 @@ function(input, output, session) {
       linkWidth = JS("function(d) { return Math.sqrt(d.value)*1.9; }"),
       legend = TRUE,
       colourScale = JS(
-      'force.alpha(1); force.restart(); d3.scaleOrdinal(d3.schemeCategory20);'
-    )
+        'force.alpha(1); force.restart(); d3.scaleOrdinal(d3.schemeCategory20);'
+      )
     )
   })
   
-}
+  # Highchart integration ------------------------------
+  
+  # Calculate sales
+  diff13 <- reactive({
+    if (input$metric == 'sales') {
+    datainput0 %>%
+      filter(as.integer(issueyear) == input$year[1]) %>%
+      group_by(rank = as.integer(substr(itemsizerank, 1, 2)) + 1) %>%
+      summarise(total=sum(sales)) %>%
+      arrange(rank)
+    } else {
+    datainput0 %>%
+      filter(as.integer(issueyear) == input$year[1]) %>%
+      group_by(rank = as.integer(substr(itemsizerank, 1, 2)) + 1) %>%
+      summarise(total=sum(quantity)) %>%
+      arrange(rank)
+    }
+  })
+  
+  # Text string of selected years for plot subtitle
+  selected_years_to_print <- reactive({
+      paste(input$year[1])
+  })
+  
+  # Highchart
+  output$hcontainer <- renderHighchart({
+    if (input$metric == 'sales') {
+    hc <- highchart() %>%
+      hc_add_series(
+        data = diff13()$total,
+        type = input$plot_type,
+        name = "Sales",
+        showInLegend = FALSE,
+        color = "#44a3c6",
+        dataLabels = list(align = "center", enabled = TRUE, color = "#44a3c6")
+      ) %>%
+      hc_yAxis(title = list(text = "Sales"),
+               allowDecimals = FALSE, max= 80000000) %>%
+      hc_xAxis(
+        categories = c(
+          "SPECIALCUTS",
+          "STORTI",
+          "150-200",
+          "200-300",
+          "300-400",
+          "300-600",
+          "400-600",
+          "600-800",
+          "500-1000",
+          "800-1000",
+          "1000-1500",
+          "1000-2000",
+          "1500-2000",
+          "2000+",
+          "2000-3000",
+          "3000-4000",
+          "4000+"
+        ),
+        tickmarkPlacement = "on",
+        opposite = TRUE
+      ) %>%
+      hc_title(text = "Total sales",
+               style = list(fontWeight = "bold")) %>%
+      hc_subtitle(text = paste("Subtitle here,",
+                               selected_years_to_print())) %>%
+      hc_tooltip(valueDecimals = 2,
+                 pointFormat = "Item Size Rank (1-17) : {point.x} <br> Sales: {point.y}€")
+    } else {
+          hc <- highchart() %>%
+      hc_add_series(
+        data = diff13()$total,
+        type = input$plot_type,
+        name = "Quantity",
+        showInLegend = FALSE,
+        color = "#c66545",
+        dataLabels = list(align = "center", enabled = TRUE, color = "#c66545")
+      ) %>%
+      hc_yAxis(title = list(text = "Quantity"),
+               allowDecimals = FALSE, max= 15000000) %>%
+      hc_xAxis(
+        categories = c(
+          "SPECIALCUTS",
+          "STORTI",
+          "150-200",
+          "200-300",
+          "300-400",
+          "300-600",
+          "400-600",
+          "600-800",
+          "500-1000",
+          "800-1000",
+          "1000-1500",
+          "1000-2000",
+          "1500-2000",
+          "2000+",
+          "2000-3000",
+          "3000-4000",
+          "4000+"
+        ),
+        tickmarkPlacement = "on",
+        opposite = TRUE
+      ) %>%
+      hc_title(text = "Total quantity",
+               style = list(fontWeight = "bold")) %>%
+      hc_subtitle(text = paste("Subtitle here,",
+                               selected_years_to_print())) %>%
+      hc_tooltip(valueDecimals = 2,
+                 pointFormat = "Item Size Rank (1-17) : {point.x} <br> Quantity: {point.y}Kgrs")
+    }
+    
+    # Print highchart
+    hc
+  }) 
+  
+  
+})
