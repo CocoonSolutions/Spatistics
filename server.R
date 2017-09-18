@@ -8,6 +8,9 @@ library("ggplot2")
 library('networkD3')
 library("highcharter")
 
+library('sqldf')
+library('forecast')
+
 # allow uploading large files ---
 if (Sys.getenv('SHINY_PORT') == "")
   options(shiny.maxRequestSize = 10000 * 1024 ^ 2)
@@ -327,5 +330,14 @@ shinyServer(function(input, output, session) {
     hc
   }) 
   
+  # Highchart integrations ------------------------------
   
+  output$highchartforecast <- renderHighchart({
+   a = sqldf("Select issueyearmon, sum(sales) sales from datainput3 where issueyearmon <> '2017-08' Group By issueyearmon order by    issueyearmon")
+   a$ts = ts(a$sales, start=c(2013, 1), end=c(2017, 7), frequency=12)
+   d.arima <- auto.arima(a$ts)
+   x <- forecast(d.arima, level = c(95, 80), h = 12)
+   hchart(x)
+  })
+
 })

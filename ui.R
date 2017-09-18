@@ -219,7 +219,8 @@ shinyUI(fluidPage(
                 choices = c("Total sales" = "sales",
                             "Total quantity" = "quantity")
               )
-            )
+            ),
+            highchartOutput("highchartforecast", width = "100%", height = "400px")
           )
         )
       ),
