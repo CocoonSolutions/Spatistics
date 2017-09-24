@@ -3,9 +3,9 @@ title:
 account: spatistics
 server: shinyapps.io
 appId: 171281
-bundleId: 985482
+bundleId: 994294
 url: https://spatistics.shinyapps.io/spatistics/
-when: 1505694084.46603
+when: 1506214793.34362
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: .RData|data/sql.txt

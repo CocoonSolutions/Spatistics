@@ -31,7 +31,7 @@ shinyServer(function(input, output, session) {
   # in bounds right now
   zipsInBounds <- reactive({
     if (is.null(input$map_bounds))
-      return(datainput1[FALSE,])
+      return(datainput1[FALSE, ])
     bounds <- input$map_bounds
     latRng <- range(bounds$north, bounds$south)
     lngRng <- range(bounds$east, bounds$west)
@@ -86,11 +86,11 @@ shinyServer(function(input, output, session) {
           "Under threshold"
         )
       pal <-
-        colorFactor("plasma", colorData) # "viridis", "magma", "inferno", or "plasma"
+        colorFactor("viridis", colorData) # "viridis", "magma", "inferno", or "plasma"
     } else {
       colorData <- datainput1[[colorBy]]
       pal <-
-        colorBin("plasma", colorData, 7, pretty = FALSE) # "viridis", "magma", "inferno", or "plasma"
+        colorBin("viridis", colorData, 7, pretty = FALSE) # "viridis", "magma", "inferno", or "plasma"
     }
     
     radius <-
@@ -118,7 +118,7 @@ shinyServer(function(input, output, session) {
   
   # Show a popup at the given location
   showZipcodePopup <- function(country, lat, lng) {
-    selectedZip <- datainput1[datainput1$country == country,]
+    selectedZip <- datainput1[datainput1$country == country, ]
     content <- as.character(
       tagList(
         tags$h4(tags$strong(HTML(
@@ -221,123 +221,357 @@ shinyServer(function(input, output, session) {
   # Calculate sales
   diff13 <- reactive({
     if (input$metric == 'sales') {
-    datainput0 %>%
-      filter(as.integer(issueyear) == input$year[1]) %>%
-      group_by(rank = as.integer(substr(itemsizerank, 1, 2)) + 1) %>%
-      summarise(total=sum(sales)) %>%
-      arrange(rank)
+      datainput0 %>%
+        filter(as.integer(issueyear) == input$year[1]) %>%
+        group_by(rank = as.integer(substr(itemsizerank, 1, 2)) + 1) %>%
+        summarise(total = sum(sales)) %>%
+        arrange(rank)
     } else {
-    datainput0 %>%
-      filter(as.integer(issueyear) == input$year[1]) %>%
-      group_by(rank = as.integer(substr(itemsizerank, 1, 2)) + 1) %>%
-      summarise(total=sum(quantity)) %>%
-      arrange(rank)
+      datainput0 %>%
+        filter(as.integer(issueyear) == input$year[1]) %>%
+        group_by(rank = as.integer(substr(itemsizerank, 1, 2)) + 1) %>%
+        summarise(total = sum(quantity)) %>%
+        arrange(rank)
     }
   })
   
   # Text string of selected years for plot subtitle
   selected_years_to_print <- reactive({
-      paste(input$year[1])
+    paste(input$year[1])
   })
   
   # Highchart
   output$hcontainer <- renderHighchart({
     if (input$metric == 'sales') {
-    hc <- highchart() %>%
-      hc_add_series(
-        data = diff13()$total,
-        type = input$plot_type,
-        name = "Sales",
-        showInLegend = FALSE,
-        color = "#44a3c6",
-        dataLabels = list(align = "center", enabled = TRUE, color = "#44a3c6")
-      ) %>%
-      hc_yAxis(title = list(text = "Sales"),
-               allowDecimals = FALSE, max= 80000000) %>%
-      hc_xAxis(
-        categories = c(
-          "SPECIALCUTS",
-          "STORTI",
-          "150-200",
-          "200-300",
-          "300-400",
-          "300-600",
-          "400-600",
-          "600-800",
-          "500-1000",
-          "800-1000",
-          "1000-1500",
-          "1000-2000",
-          "1500-2000",
-          "2000+",
-          "2000-3000",
-          "3000-4000",
-          "4000+"
-        ),
-        tickmarkPlacement = "on",
-        opposite = TRUE
-      ) %>%
-      hc_title(text = "Total sales",
-               style = list(fontWeight = "bold")) %>%
-      hc_subtitle(text = paste("Subtitle here,",
-                               selected_years_to_print())) %>%
-      hc_tooltip(valueDecimals = 2,
-                 pointFormat = "Item Size Rank (1-17) : {point.x} <br> Sales: {point.y}€")
+      hc <- highchart() %>%
+        hc_add_series(
+          data = diff13()$total,
+          type = input$plot_type,
+          name = "Sales",
+          showInLegend = FALSE,
+          color = "#7cb5ec",
+          dataLabels = list(align = "center",
+                            enabled = TRUE)
+        ) %>%
+        hc_yAxis(
+          title = list(text = "Sales"),
+          allowDecimals = FALSE,
+          max = 80000000
+        ) %>%
+        hc_xAxis(
+          categories = c(
+            "SPECIALCUTS",
+            "STORTI",
+            "150-200",
+            "200-300",
+            "300-400",
+            "300-600",
+            "400-600",
+            "600-800",
+            "500-1000",
+            "800-1000",
+            "1000-1500",
+            "1000-2000",
+            "1500-2000",
+            "2000+",
+            "2000-3000",
+            "3000-4000",
+            "4000+"
+          ),
+          tickmarkPlacement = "on",
+          opposite = TRUE
+        ) %>%
+        hc_title(text = "Total sales",
+                 style = list(fontWeight = "bold")) %>%
+        hc_subtitle(text = paste("Subtitle here,",
+                                 selected_years_to_print())) %>%
+        hc_tooltip(valueDecimals = 2,
+                   pointFormat = "Item Size Rank (1-17) : {point.x} <br> Sales: {point.y}€")
     } else {
-          hc <- highchart() %>%
-      hc_add_series(
-        data = diff13()$total,
-        type = input$plot_type,
-        name = "Quantity",
-        showInLegend = FALSE,
-        color = "#c66545",
-        dataLabels = list(align = "center", enabled = TRUE, color = "#c66545")
-      ) %>%
-      hc_yAxis(title = list(text = "Quantity"),
-               allowDecimals = FALSE, max= 15000000) %>%
-      hc_xAxis(
-        categories = c(
-          "SPECIALCUTS",
-          "STORTI",
-          "150-200",
-          "200-300",
-          "300-400",
-          "300-600",
-          "400-600",
-          "600-800",
-          "500-1000",
-          "800-1000",
-          "1000-1500",
-          "1000-2000",
-          "1500-2000",
-          "2000+",
-          "2000-3000",
-          "3000-4000",
-          "4000+"
-        ),
-        tickmarkPlacement = "on",
-        opposite = TRUE
-      ) %>%
-      hc_title(text = "Total quantity",
-               style = list(fontWeight = "bold")) %>%
-      hc_subtitle(text = paste("Subtitle here,",
-                               selected_years_to_print())) %>%
-      hc_tooltip(valueDecimals = 2,
-                 pointFormat = "Item Size Rank (1-17) : {point.x} <br> Quantity: {point.y}Kgrs")
+      hc <- highchart() %>%
+        hc_add_series(
+          data = diff13()$total,
+          type = input$plot_type,
+          name = "Quantity",
+          showInLegend = FALSE,
+          color = "#90ed7d",
+          dataLabels = list(align = "center",
+                            enabled = TRUE)
+        ) %>%
+        hc_yAxis(
+          title = list(text = "Quantity"),
+          allowDecimals = FALSE,
+          max = 15000000
+        ) %>%
+        hc_xAxis(
+          categories = c(
+            "SPECIALCUTS",
+            "STORTI",
+            "150-200",
+            "200-300",
+            "300-400",
+            "300-600",
+            "400-600",
+            "600-800",
+            "500-1000",
+            "800-1000",
+            "1000-1500",
+            "1000-2000",
+            "1500-2000",
+            "2000+",
+            "2000-3000",
+            "3000-4000",
+            "4000+"
+          ),
+          tickmarkPlacement = "on",
+          opposite = TRUE
+        ) %>%
+        hc_title(text = "Total quantity",
+                 style = list(fontWeight = "bold")) %>%
+        hc_subtitle(text = paste("Subtitle here,",
+                                 selected_years_to_print())) %>%
+        hc_tooltip(valueDecimals = 2,
+                   pointFormat = "Item Size Rank (1-17) : {point.x} <br> Quantity: {point.y}Kgrs")
     }
     
     # Print highchart
     hc
-  }) 
+  })
   
   # Highchart integrations ------------------------------
   
+  # point 9 forecast
   output$highchartforecast <- renderHighchart({
-   a = sqldf("Select issueyearmon, sum(sales) sales from datainput3 where issueyearmon <> '2017-08' Group By issueyearmon order by    issueyearmon")
-   a$ts = ts(a$sales, start=c(2013, 1), end=c(2017, 7), frequency=12)
-   d.arima <- auto.arima(a$ts)
-   x <- forecast(d.arima, level = c(95, 80), h = 12)
-   hchart(x)
+    a01 = sqldf(
+      "Select issueyearmon, sum(sales) sales from datainput3 where issueyearmon <> '2017-08' Group By issueyearmon order by issueyearmon"
+    )
+    a01$ts = ts(
+      a01$sales,
+      start = c(2013, 1),
+      end = c(2017, 7),
+      frequency = 12
+    )
+    d.arima <- auto.arima(a01$ts)
+    x <- forecast(d.arima, level = c(95, 80), h = 12)
+    hchart(x)
   })
-
+  
+  # point 2 pie chart
+  output$highchart2 <- renderHighchart({
+    a02 = sqldf(
+      "Select 'Sales inside Greece', sum(sales) sales from datainput3 where country = 'GREECE' union Select 'Sales outside Greece', sum(sales) sales from datainput3 where country <> 'GREECE' "
+    )
+    a02$saleRatio = as.numeric(format(round(100 * a02$sales / sum(a02$sales), 2), nsmall = 2))
+    highchart() %>%
+      hc_title(text = "") %>%
+      hc_subtitle(text = "") %>%
+      hc_add_series_labels_values(
+        c(
+          paste(as.character(a02$saleRatio[[1]]), '% inside Greece'),
+          paste(as.character(a02$saleRatio[[2]]), '% outside Greece')
+        ),
+        a02$saleRatio,
+        type = "pie",
+        name = "Percentage of sales",
+        colorByPoint = TRUE,
+        size = 200,
+        color = c('#7cb5ec', '#bfbfbf')
+      )
+  })
+  
+  # point 3 area chart
+  output$highchart3 <- renderHighchart({
+    a03 = sqldf(
+      "Select issuemonth Month, sum(sales) Sales, sum(quantity) Quantity, sum(sales)/sum(quantity) Price from datainput3 where issueyear != '2017' group by issuemonth"
+    )
+    
+    highchart() %>%
+      hc_xAxis(
+        plotBands = list(
+          list(
+            from = 4,
+            to = 8,
+            color = "rgba(100, 0, 0, 0.1)",
+            label = list(text = "44.62% of Total Sales")
+          )
+        ),
+        categories = c(
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec'
+        )
+      ) %>%
+      hc_add_series(name = "Sales", data = a03$Sales) %>%
+      hc_add_series(name = "Quantity", data = a03$Quantity) %>%
+      hc_add_series(name = "Price", data = a03$Price)
+  })
+  
+  # point 5 area chart
+  output$highchart5 <- renderHighchart({
+    a051 = sqldf(
+      "Select issueyearmon YearMon, sum(sales) Sales, sum(quantity) Quantity, sum(sales)/sum(quantity) Price from datainput3 where itemgroup='Seabream' and issueyearmon != '2017-08' group by issueyearmon"
+    )
+    a052 = sqldf(
+      "Select issueyearmon YearMon, sum(sales) Sales, sum(quantity) Quantity, sum(sales)/sum(quantity) Price from datainput3 where itemgroup='Meagre' and issueyearmon != '2017-08' group by issueyearmon"
+    )
+    
+    highchart() %>%
+      hc_xAxis(categories = a051$YearMon,
+               plotBands = list(
+                 list(
+                   from = 28,
+                   to = 32,
+                   color = "rgba(100, 0, 0, 0.1)",
+                   label = list(text = "Top 5 Selling Prices")
+                 )
+               )) %>%
+      hc_add_series(name = "Seabream Selling Price (Euros/kgr)", data = a051$Price) %>%
+      hc_add_series(name = "Meagre Selling Price (Euros/kgr)", data = a052$Price) %>%
+      hc_add_series(
+        name = "Seabream Quantity in (Million kgrs)",
+        data = a051$Quantity /
+          1000000,
+        type = 'area',
+        color = '#d9d9d9'
+      ) %>%
+      hc_add_series(
+        name = "Meagre Quantity in (Million kgrs)",
+        data = a052$Quantity /
+          1000000,
+        type = 'area',
+        color = '#d9d9d9'
+      )
+  })
+  
+  # point 6 area chart
+  output$highchart6 <- renderHighchart({
+    a06fillet = sqldf(
+      "Select issueyearmon YearMon, sum(sales) Sales, sum(quantity) Quantity, sum(sales)/sum(quantity) Price from datainput3 where itemcategory='Fillet' and issueyearmon != '2017-08' group by issueyearmon"
+    )
+    a06gutted = sqldf(
+      "Select issueyearmon YearMon, sum(sales) Sales, sum(quantity) Quantity, sum(sales)/sum(quantity) Price from datainput3 where itemcategory='Gutted' and issueyearmon != '2017-08' group by issueyearmon"
+    )
+    a06whole = sqldf(
+      "Select issueyearmon YearMon, sum(sales) Sales, sum(quantity) Quantity, sum(sales)/sum(quantity) Price from datainput3 where itemcategory='Whole' and issueyearmon != '2017-08' group by issueyearmon"
+    )
+    a06 = sqldf(
+      "Select itemcategory, sum(sales) Sales, sum(quantity) Quantity, sum(sales)/sum(quantity) Price from datainput3 where issueyearmon != '2017-08' group by itemcategory"
+    )
+    a06$quantityRatio = as.numeric(format(round(
+      100 * a06$Quantity / sum(a06$Quantity), 2
+    ), nsmall = 2))
+    a06$SalesRatio = as.numeric(format(round(100 * a06$Sales / sum(a06$Sales), 2), nsmall = 2))
+    highchart() %>%
+      hc_chart(type = "line") %>%
+      hc_xAxis(categories = a06$YearMon) %>%
+      hc_add_series(name = "Fillet (Euros/kgr)", data = a06gutted$Price) %>%
+      hc_add_series(name = "Gutted (Euros/kgr)", data = a06fillet$Price) %>%
+      hc_add_series(name = "Whole (Euros/kgr)", data = a06whole$Price)  %>%
+      hc_add_series_labels_values(
+        a06$itemcategory,
+        a06$quantityRatio,
+        type = "pie",
+        name = "Percentage of total Quantity",
+        colorByPoint = TRUE,
+        center = c('65%', '38%'),
+        size = 70,
+        dataLabels = list(enabled = FALSE)
+      ) %>%
+      hc_add_series_labels_values(
+        a06$itemcategory,
+        a06$SalesRatio,
+        type = "pie",
+        name = "Percentage of total Sales",
+        colorByPoint = TRUE,
+        center = c('35%', '38%'),
+        size = 70,
+        dataLabels = list(enabled = FALSE)
+      )
+  })
+  
+  # point 7 area chart
+  output$highchart71 <- renderHighchart({
+    a071 = sqldf(
+      "Select 'Top 10 Countries in Sales' label, 100*sum(sales_c)/599716802 percent from datainput1 where cumulfreqnum > 12 union Select 'Rest of the Countries' label, 100*sum(sales_c)/599716802 percent from datainput1 where cumulfreqnum <= 12 "
+    )
+    a071$percent = as.numeric(format(a071$percent, digits = 4))
+    highchart() %>%
+      hc_chart(type = "column") %>%
+      hc_plotOptions(column = list(
+        dataLabels = list(enabled = FALSE),
+        stacking = "normal",
+        enableMouseTracking = FALSE
+      )) %>%
+      hc_xAxis(categories = datainput1$code, plotBands = list(
+        list(
+          from = 28,
+          to = 37,
+          color = "rgba(100, 0, 0, 0.1)",
+          label = list(text = "")
+        )
+      )) %>%
+      hc_add_series(name = "Total Sales (Euros)", data = datainput1$sales_c) %>%
+      hc_add_series(name = "Total Quantity (kgr)", data = datainput1$sales_q) %>%
+      hc_add_series_labels_values(
+        a071$label,
+        a071$percent,
+        type = "pie",
+        name = "Percentage of Sales (%)",
+        colorByPoint = TRUE,
+        center = c('35%', '38%'),
+        size = 100,
+        color = c('#7cb5ec', '#90ed7d')
+      )
+  })
+  
+  output$highchart72 <- renderHighchart({
+    datainput1$salesGroup = ifelse(
+      datainput1$cumulfreqnum > 12,
+      'Top 10 Countries in Sales',
+      ifelse(
+        datainput1$cumulfreqnum <= 12 &
+          datainput1$cumulfreqnum > 1,
+        'Countries with Medium Sales',
+        'Countries with Less Sales'
+      )
+    )
+    
+    highchart() %>%
+      hc_chart(zoomType = "xy") %>%
+      hc_add_series(
+        dataLabels = list(enabled = TRUE,
+                          format = "{point.label}"),
+        data = datainput1,
+        hcaes(
+          x = gdp2016,
+          y = pop2016,
+          z = sales_c,
+          group = salesGroup
+        ),
+        color = c('#434348', '#7cb5ec', '#90ed7d'),
+        type = "scatter"
+      ) %>%
+      hc_tooltip(
+        useHTML = TRUE,
+        headerFormat = "<table>",
+        pointFormat = paste(
+          "<tr><th colspan=\"1\"><b>{point.label}</b></th></tr>",
+          "<tr><th>Country</th><td>{point.country}</td></tr>",
+          "<tr><th>GDP 2016</th><td>{point.x} euros</td></tr>",
+          "<tr><th>Population 2016</th><td>{point.y} people</td></tr>",
+          "<tr><th>Total Sales</th><td>{point.z} euros</td></tr>"
+        ),
+        footerFormat = "</table>"
+      )
+  })
+  
 })
