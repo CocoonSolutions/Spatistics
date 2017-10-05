@@ -131,7 +131,7 @@ shinyServer(function(input, output, session) {
         ),
         tags$br(),
         sprintf(
-          "Total sales: %s euros",
+          "Total sales: %s €",
           format(
             as.integer(selectedZip$sales_c),
             big.mark = ",",
@@ -168,7 +168,7 @@ shinyServer(function(input, output, session) {
         ),
         tags$br(),
         sprintf(
-          "Gross Domestic Product 2016: %s euros",
+          "Gross Domestic Product 2016: %s €",
           format(
             as.integer(selectedZip$gdp2016),
             big.mark = ",",
@@ -249,12 +249,10 @@ shinyServer(function(input, output, session) {
           type = input$plot_type,
           name = "Sales",
           showInLegend = FALSE,
-          color = "#7cb5ec",
-          dataLabels = list(align = "center",
-                            enabled = TRUE)
+          color = "#7cb5ec"
         ) %>%
         hc_yAxis(
-          title = list(text = "Sales"),
+          title = list(text = "Sales (€)"),
           allowDecimals = FALSE,
           max = 80000000
         ) %>%
@@ -281,9 +279,9 @@ shinyServer(function(input, output, session) {
           tickmarkPlacement = "on",
           opposite = TRUE
         ) %>%
-        hc_title(text = "Total sales",
+        hc_title(text = "",
                  style = list(fontWeight = "bold")) %>%
-        hc_subtitle(text = paste("Subtitle here,",
+        hc_subtitle(text = paste("Total", input$metric, " per size for the year of",
                                  selected_years_to_print())) %>%
         hc_tooltip(valueDecimals = 2,
                    pointFormat = "Item Size Rank (1-17) : {point.x} <br> Sales: {point.y}€")
@@ -294,12 +292,10 @@ shinyServer(function(input, output, session) {
           type = input$plot_type,
           name = "Quantity",
           showInLegend = FALSE,
-          color = "#90ed7d",
-          dataLabels = list(align = "center",
-                            enabled = TRUE)
-        ) %>%
+          color = "#90ed7d"
+          ) %>%
         hc_yAxis(
-          title = list(text = "Quantity"),
+          title = list(text = "Quantity (kgrs)"),
           allowDecimals = FALSE,
           max = 15000000
         ) %>%
@@ -326,12 +322,12 @@ shinyServer(function(input, output, session) {
           tickmarkPlacement = "on",
           opposite = TRUE
         ) %>%
-        hc_title(text = "Total quantity",
+        hc_title(text = "",
                  style = list(fontWeight = "bold")) %>%
-        hc_subtitle(text = paste("Subtitle here,",
+        hc_subtitle(text = paste("Total", input$metric, " per size for the year of",
                                  selected_years_to_print())) %>%
         hc_tooltip(valueDecimals = 2,
-                   pointFormat = "Item Size Rank (1-17) : {point.x} <br> Quantity: {point.y}Kgrs")
+                   pointFormat = "Item Size Rank (1-17) : {point.x} <br> Quantity: {point.y} Kgrs")
     }
     
     # Print highchart
@@ -364,7 +360,7 @@ shinyServer(function(input, output, session) {
     a02$saleRatio = as.numeric(format(round(100 * a02$sales / sum(a02$sales), 2), nsmall = 2))
     highchart() %>%
       hc_title(text = "") %>%
-      hc_subtitle(text = "") %>%
+      hc_subtitle(text = "Percentage of Total Sales from Jan.2013 to Aug.2017") %>%
       hc_add_series_labels_values(
         c(
           paste(as.character(a02$saleRatio[[1]]), '% inside Greece'),
@@ -386,6 +382,7 @@ shinyServer(function(input, output, session) {
     )
     
     highchart() %>%
+      hc_subtitle(text = "Average Sales, Quantity and Selling Price per Month from Jan.2013 to Dec.2016") %>%
       hc_xAxis(
         plotBands = list(
           list(
@@ -410,9 +407,9 @@ shinyServer(function(input, output, session) {
           'Dec'
         )
       ) %>%
-      hc_add_series(name = "Sales", data = a03$Sales) %>%
-      hc_add_series(name = "Quantity", data = a03$Quantity) %>%
-      hc_add_series(name = "Price", data = a03$Price)
+      hc_add_series(name = "Average Sales (€)", data = a03$Sales/4) %>%
+      hc_add_series(name = "Average Quantity (Kgrs)", data = a03$Quantity/4) %>%
+      hc_add_series(name = "Average Price (€/kgrs)", data = a03$Price)
   })
   
   # point 5 area chart
@@ -425,6 +422,7 @@ shinyServer(function(input, output, session) {
     )
     
     highchart() %>%
+      hc_subtitle(text = "Trend of Selling Price and Quantity for Seabream and Meagre from Jan.2013 to Jul.2017") %>%
       hc_xAxis(categories = a051$YearMon,
                plotBands = list(
                  list(
@@ -434,8 +432,8 @@ shinyServer(function(input, output, session) {
                    label = list(text = "Top 5 Selling Prices")
                  )
                )) %>%
-      hc_add_series(name = "Seabream Selling Price (Euros/kgr)", data = a051$Price) %>%
-      hc_add_series(name = "Meagre Selling Price (Euros/kgr)", data = a052$Price) %>%
+      hc_add_series(name = "Seabream Selling Price (€/kgr)", data = a051$Price) %>%
+      hc_add_series(name = "Meagre Selling Price (€/kgr)", data = a052$Price) %>%
       hc_add_series(
         name = "Seabream Quantity in (Million kgrs)",
         data = a051$Quantity /
@@ -472,10 +470,11 @@ shinyServer(function(input, output, session) {
     a06$SalesRatio = as.numeric(format(round(100 * a06$Sales / sum(a06$Sales), 2), nsmall = 2))
     highchart() %>%
       hc_chart(type = "line") %>%
-      hc_xAxis(categories = a06$YearMon) %>%
-      hc_add_series(name = "Fillet (Euros/kgr)", data = a06gutted$Price) %>%
-      hc_add_series(name = "Gutted (Euros/kgr)", data = a06fillet$Price) %>%
-      hc_add_series(name = "Whole (Euros/kgr)", data = a06whole$Price)  %>%
+      hc_subtitle(text = "Trend of Selling Price per Category from Jan.2013 to Jul.2017") %>%
+      hc_xAxis(categories = a06gutted$YearMon) %>%
+      hc_add_series(name = "Fillet (€/kgr)", data = a06gutted$Price) %>%
+      hc_add_series(name = "Gutted (€/kgr)", data = a06fillet$Price) %>%
+      hc_add_series(name = "Whole (€/kgr)", data = a06whole$Price)  %>%
       hc_add_series_labels_values(
         a06$itemcategory,
         a06$quantityRatio,
@@ -505,6 +504,7 @@ shinyServer(function(input, output, session) {
     )
     a071$percent = as.numeric(format(a071$percent, digits = 4))
     highchart() %>%
+      hc_subtitle(text = "Total Sales and Quantity per Country from Jan.2013 to Dec.2016") %>%
       hc_chart(type = "column") %>%
       hc_plotOptions(column = list(
         dataLabels = list(enabled = FALSE),
@@ -519,7 +519,7 @@ shinyServer(function(input, output, session) {
           label = list(text = "")
         )
       )) %>%
-      hc_add_series(name = "Total Sales (Euros)", data = datainput1$sales_c) %>%
+      hc_add_series(name = "Total Sales (€)", data = datainput1$sales_c) %>%
       hc_add_series(name = "Total Quantity (kgr)", data = datainput1$sales_q) %>%
       hc_add_series_labels_values(
         a071$label,
@@ -546,6 +546,7 @@ shinyServer(function(input, output, session) {
     )
     
     highchart() %>%
+      hc_subtitle(text = "Comparing 2016 GDP and Total Population to Annual Average Sales per Country") %>%
       hc_chart(zoomType = "xy") %>%
       hc_add_series(
         dataLabels = list(enabled = TRUE,
@@ -554,7 +555,7 @@ shinyServer(function(input, output, session) {
         hcaes(
           x = gdp2016,
           y = pop2016,
-          z = sales_c,
+          z = sales_c/4,
           group = salesGroup
         ),
         color = c('#434348', '#7cb5ec', '#90ed7d'),
@@ -566,9 +567,9 @@ shinyServer(function(input, output, session) {
         pointFormat = paste(
           "<tr><th colspan=\"1\"><b>{point.label}</b></th></tr>",
           "<tr><th>Country</th><td>{point.country}</td></tr>",
-          "<tr><th>GDP 2016</th><td>{point.x} euros</td></tr>",
+          "<tr><th>GDP 2016</th><td>{point.x} €</td></tr>",
           "<tr><th>Population 2016</th><td>{point.y} people</td></tr>",
-          "<tr><th>Total Sales</th><td>{point.z} euros</td></tr>"
+          "<tr><th>Total Sales</th><td>{point.z} €</td></tr>"
         ),
         footerFormat = "</table>"
       )
