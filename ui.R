@@ -76,18 +76,24 @@ shinyUI(
             span(".", style = "background-color:#66a3ff; color:#66a3ff; font-size: 120%;"),
             span("-", style = "color:white; font-size: 120%;"),
             "An introduction to Company's production line and products"
+          ),
+          h4(
+            "The production is separated in two main production lines: ",
+            span("the Fresh and the Frozen fish.", style = "color:#7cb5ec"),
+            " At the first step of the process, when the fish reach the appropriate sizes, they are taken for further processing."
           )
         )),
         fluidRow(
           shiny::column(
             width = 4,
             h4(
-              "The production is separated in two main production lines: ",
-              span("the Fresh and the Frozen fish.", style = "color:#7cb5ec"),
-              " At the first step of the process, when the fish reach the appropriate sizes, they are taken to be processed. Then, the fish are separated in three categories: (a) Gutted, (b) Fillet and (c) Whole. The company produces ",
+              "Thus, the fish are separated in three categories: (a) Gutted, (b) Fillet and (c) Whole. Its category contains its products and every product its own sizes. Same products may exist in more than one categories."
+            ),
+            p(h4(
+              "The company produces ",
               span("4 types of fish and 17 distinct sizes", style = "color:#7cb5ec"),
               " in total."
-            )
+            ))
           ),
           shiny::column(
             width = 8,
@@ -140,7 +146,7 @@ shinyUI(
           width = 12,
           p(
             h4(
-              "The selling price depends on the type, the size, the product line meaning whether it is processed, the consignor country and the date of order."
+              "The selling price depends on the type, the size, the product line - meaning whether it is processed or not -, the consignor country and the date of order."
             )
           ),
           h4(
@@ -195,11 +201,9 @@ shinyUI(
           ),
           h4(
             "According to the analysis, smaller sizes are selling more than larger ones. In addition, ",
-            span(
-              "2 out of the 17 total sizes are the holders of 73.3% of total sales ",
-              style = "color:#7cb5ec"
-            ),
-            " between January of 2013 and December of 2016. These sizes are (300-400) and (400-600). In the third place with 10.2% of total sales is the size of (600-800) and in the forth place with 6.9% is the size of (200-300) with 6.9%, which is also one one the smaller group of sizes."
+            span("2 out of 17 sizes are the holders of 73.3% of total sales ",
+                 style = "color:#7cb5ec"),
+            " between January of 2013 and December of 2016. These sizes are (300-400) and (400-600). In the third place with 10.2% of total sales is the size of (600-800) and in the forth place with 6.9% is the size of (200-300), which is also one of the smaller group of sizes."
           ),
           highchartOutput("hcontainer", height = "300px"),
           br()
@@ -271,11 +275,18 @@ shinyUI(
             "In 2015 Seabream had a raise of ~ 7 billion € in sales"
           ),
           h4(
-            "2Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+            "In 2015, total production of Seabream was less than previous years. However, in the same year, ",
+            span(
+              "the selling price of Seabream reached its maximum value with an average of 5.84€/kg.",
+              style = "color:#7cb5ec"
+            ),
+            "Moreover, in July of 2015 the selling price was at its highest value between January 2013 and July. The top 5 average selling prices per month for Seabream where from May to September of 2015 (6.22€/kg). This indicates that the demand for Seabream is increasing over the years."
           ),
           highchartOutput("highchart5", width = "100%", height = "400px"),
           h4(
-            "2Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+            "On the other hand, the selling price of Meagre has been decreasing over the last months. This confirms a previous conclusion that ",
+            span("small sizes have a greater demand than larger ones", style = "color:#7cb5ec"),
+            ", as sizes for Meagre range from (500-1000) to (4000+)."
           )
         )),
         # ----------------------------------------
@@ -292,12 +303,16 @@ shinyUI(
           )
           ,
           h4(
-            "2Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+            "According to the average selling price through the period of study, Fillet is sold 1.84 times more than Gutted and 2.45 times more than Whole fish. Despite the difference in the selling price among the three categories, Whole fish is the dominant category in sales as ",
+            span(
+              "almost 90% of total revenue is obtained from the sales of Whole fish.",
+              style = "color:#7cb5ec"
+            )
           )
           ,
           highchartOutput("highchart6", width = "100%", height = "400px"),
           h4(
-            "2Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+            "Similar proportions are occured also in quantities. 93.75% of total quantity produced follows the path of the Whole fish while only the 6% is sold in the market as Fillet or Gutted fish."
           )
         )),
         # ----------------------------------------
@@ -315,135 +330,180 @@ shinyUI(
             )
             ,
             h4(
-              "2Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+              "The company has 38 point of sales all over the world. Each point represents a country from Canada to Singapore. Top 10 countries in sales are Italy, France, Greece, Portugal, Spain, Great Britain, Germany, USA, Holland and Romania. Betwwen period from January of 2013 to December of 2017, these ",
+              span(
+                "10 countries held almost 90% of total sales (~535€ millions).",
+                style = "color:#7cb5ec"
+              )
+            ),
+            p(
+              h4(
+                "The total quantity produced for the same countries and period was 97,688 tonnes of fish that is equivalent to 89.49% of the total quantity."
+              )
             ),
             highchartOutput("highchart71", width = "100%", height = "400px"),
             h4(
-              "2Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-            ),
-            highchartOutput("highchart72", width = "100%", height = "400px")
+              "A cluster analysis of countries characteristics shows that Russia, although has a GDP close to Romania and population 8 times more than Romania's, it is grouped with countries with medium sales. A further analysis shows that in August of 2014 Russia stopped purchasing fish products from the company. One reason for this is that this might be caused by ",
+              span(
+                "Russia's embargo that bannned European Union food imports in August of 2014.",
+                style = "color:#7cb5ec"
+              ),
+            " And that is also the case with Ukraine."
+          ),
+          highchartOutput("highchart72", width = "100%", height = "400px"),
+          h4(
+            "Another coclusion from this cluster analysis is that although Greece, Portugal, Esthonia and Chech Republic have great similarity in terms of GDP and total population, they are grouped in different clusters. Greece and Portugal belong to the first group whereas Esthonia and Chech Republic belong to the second. This is also due to the fact that ",
+              span(
+                "Greece is where company's head office are located and Portugal has a very high rate in sales (4rth place)",
+                style = "color:#7cb5ec"
+              ),
+            " whereas sales figures for Esthonia and Chech Republic show a discontinuous demand for fish."
           )
-        ),
-        # ----------------------------------------
-        # Point 8 --------------------------------
-        # ----------------------------------------
-        fluidRow(
-          shiny::column(
-            width = 12,
-            h2(
-              span(". ", style = "background-color:#66a3ff; color:#66a3ff; font-size: 120%;"),
-              span("8 ", style = "background-color:#66a3ff; font-size: 120%; color:#ffffff;"),
-              span(".", style = "background-color:#66a3ff; color:#66a3ff; font-size: 120%;"),
-              span("-", style = "color:white; font-size: 120%;"),
-              "Mapping and classification analysis of destinations"
-            ),
-            h4(
-              "66% of total sales came from 13,5% of countries. map etc, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-            ),
-            leafletOutput("map", "100%", "400px"),
-            br()
-            ,
-            fluidRow(shiny::column(
-              width = 12,
-              fluidRow(
-                shiny::column(width = 6,
-                              selectInput("color", "Color", vars, selected = "cnt")),
-                shiny::column(width = 6,
-                              selectInput("size", "Size", vars, selected = "sales_c"))
-              )
-            )),
-            fluidRow(
-              shiny::column(
-                width = 12,
-                conditionalPanel(
-                  "input.color == 'cumulfreqnum'",
-                  # Only prompt for threshold when coloring or sizing by sales_q
-                  numericInput("threshold", "Cumulative Sales threshold", 50)
-                ),
-                plotOutput("histCentile", height = 200),
-                h4(
-                  "66% of total sales came from 13,5% of countries. map etc, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-                ),
-                plotOutput("scatterCollegeIncome", height = 250),
-                h4(
-                  "3Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-                )
-              )
-            )
-          )
-        ),
-        # ----------------------------------------
-        # Point 9 --------------------------------
-        # ----------------------------------------
-        fluidRow(shiny::column(
+        )
+      ),
+      # ----------------------------------------
+      # Point 8 --------------------------------
+      # ----------------------------------------
+      fluidRow(
+        shiny::column(
           width = 12,
           h2(
             span(". ", style = "background-color:#66a3ff; color:#66a3ff; font-size: 120%;"),
-            span("9 ", style = "background-color:#66a3ff; font-size: 120%; color:#ffffff;"),
+            span("8 ", style = "background-color:#66a3ff; font-size: 120%; color:#ffffff;"),
             span(".", style = "background-color:#66a3ff; color:#66a3ff; font-size: 120%;"),
             span("-", style = "color:white; font-size: 120%;"),
-            "Sales forecast for 2018"
+            "Mapping and classification analysis of destinations"
           ),
           h4(
-            "2Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+            "In 2016, 84% of the countries that had at least one trunsanction were Europian. Using the classification method of equal intervals with 7 classes, the map shows that in case of total quantity for year 2016, the 7th class contains 22 countries. That is also the case with total sales. This indicates that top countries in sales exceed by far countries with lower sales. The countries with the higher sales were Italy, France, Greece, Spain and Portugal. Actually, ",
+              span(
+                "~67% of total sales in 2016 came from 16% of total countries",
+                style = "color:#7cb5ec"
+              ),
+            " or from 5 mediterranean countries."
           ),
-          highchartOutput("highchartforecast", width = "100%", height = "400px")
-        )),
-        # ----------------------------------------
-        # Conclusion -----------------------------
-        # ----------------------------------------
-        fluidRow(
-          shiny::column(
+          leafletOutput("map", "100%", "400px"),
+          br()
+          ,
+          fluidRow(shiny::column(
             width = 12,
-            h2(
-              span(". ", style = "background-color:#66a3ff; color:#66a3ff; font-size: 120%;"),
-              span("> ", style = "background-color:#66a3ff; font-size: 120%; color:#ffffff;"),
-              span(".", style = "background-color:#66a3ff; color:#66a3ff; font-size: 120%;"),
-              span("-", style = "color:white; font-size: 120%;"),
-              "Aquaculture is a dynamic industry with potentials in technology..."
-            ),
-            p("p creates a paragraph of text."),
-            p(
-              "A new p() command starts a new paragraph. Supply a style attribute to change the format of the entire paragraph."
-            ),
-            strong("strong() makes bold text."),
-            em("em() creates italicized (i.e, emphasized) text."),
-            br(),
-            code("code displays your text similar to computer code"),
-            div(
-              "div creates segments of text with a similar style. This division of text is all #66a3ff because I passed the argument 'style = color:#66a3ff' to div",
-              style = "color:#66a3ff"
-            ),
-            br(),
-            p(
-              "span does the same thing as div, but it works with",
-              span("groups of words", style = "color:#66a3ff"),
-              "that appear inside a paragraph."
-            ),
-            hr(),
-            p(
-              h5(
-                "*The data have been collected from an Aquaculture Company Group located in Greece and refer to information about the orders of the company, amount of sale and quantity of fish, in the period between 1.1.2013 and 22.8.2017. Latest update: 24.9.2017"
+            fluidRow(
+              shiny::column(width = 6,
+                            selectInput("color", "Color", vars, selected = "sales_c")),
+              shiny::column(width = 6,
+                            selectInput("size", "Size", vars, selected = "sales_q"))
+            )
+          )),
+          fluidRow(
+            shiny::column(
+              width = 12,
+              conditionalPanel(
+                "input.color == 'cumulfreqnum'",
+                # Only prompt for threshold when coloring or sizing by sales_q
+                numericInput("threshold", "Cumulative Sales threshold", 50)
+              ),
+              plotOutput("histCentile", height = 200),
+              h4(
+                "Analyzing sales ",
+              span(
+                "from January 2013 to December 2016",
+                style = "color:#7cb5ec"
+              ),
+            ", numbers showed that these ",
+              span(
+                "5 mediterranean countries",
+                style = "color:#7cb5ec"
+              ),
+            ", which in this case represent 13,5% of total countries, ",
+              span(
+                "held 66% of total sales.",
+                style = "color:#7cb5ec"
               )
-            ),
-            p(
-              h5(
-                "**FAO, (2016). The State of World Fisheries and Aquaculture 2016, FAO.Contributing to food security and nutrition for all. Rome, 200 pp."
-              )
+              ),
+              plotOutput("scatterCollegeIncome", height = 250),
+              h4(
+                "According to countries classification, the ",
+              span(
+                "top 5 countries belong to five different clsses",
+                style = "color:#7cb5ec"
+              ),
+            ". The scatter plot describes the reason of this result. The top 5 five countries on the upper right of the plot are shown to have larger distances among them whereas countries with lower sales and quantity are very close to each other and thus can be easily grouped together."
+              ),
+            p(h4("The cumulative frequency of sales, which is defined as the sum of all previous frequencies up to the current point when frequencies are ordered from the smallest to the largest, indicates the ",
+              span(
+                "small contribution of countries with lower sales to total sales.",
+                style = "color:#7cb5ec"
+              )))
             )
           )
         )
       ),
-      shiny::column(width = 3)
-    ),
-    # 3 ---
-    fluidRow(shiny::column(
-      width = 12,
-      img(
-        src = "Untitled-4.jpg",
-        height = "100%",
-        width = "100%"
+      # ----------------------------------------
+      # Point 9 --------------------------------
+      # ----------------------------------------
+      fluidRow(shiny::column(
+        width = 12,
+        h2(
+          span(". ", style = "background-color:#66a3ff; color:#66a3ff; font-size: 120%;"),
+          span("9 ", style = "background-color:#66a3ff; font-size: 120%; color:#ffffff;"),
+          span(".", style = "background-color:#66a3ff; color:#66a3ff; font-size: 120%;"),
+          span("-", style = "color:white; font-size: 120%;"),
+          "Sales forecast for 2018"
+        ),
+        h4(
+          "Based on data from January 2013 to August 2017, the prediction of total sales per month for the next 12 months is very positive. Sales will have a constant decline until February of 2018 and after that they will increase and ",
+              span(
+                "in July of 2018 will reach the number of ~16.9 millions,",
+                style = "color:#7cb5ec"
+              ), " which is the highest value of total sales from January of 2013."
+        ),
+        highchartOutput("highchartforecast", width = "100%", height = "400px")
+      )),
+      # ----------------------------------------
+      # Conclusion -----------------------------
+      # ----------------------------------------
+      fluidRow(
+        shiny::column(
+          width = 12,
+          h2(
+            span(". ", style = "background-color:#66a3ff; color:#66a3ff; font-size: 120%;"),
+            span("> ", style = "background-color:#66a3ff; font-size: 120%; color:#ffffff;"),
+            span(".", style = "background-color:#66a3ff; color:#66a3ff; font-size: 120%;"),
+            span("-", style = "color:white; font-size: 120%;"),
+            "Conclusion"
+          ),
+          p(h4("In summation, in view of this analysis, Marineculture is a dynamic growing sector and can contribute measurably to the completion of the increasing demand for food in the next decades.")),
+          p(h4("The main conclusions of this analysis are briefly summarised below:")),
+             h4(tags$ul(
+              tags$li("Countries that import and consume the majority of these specific types of fish products are the mediterranean countries (Italy, France, Greece, Spain and Portugal)."),
+              tags$li("The consumers prefer fish categories with smaller sizes than categories with larger sizes."),
+              tags$li("Selling prices are higher during summer months, especially in July."),
+              tags$li("The demand for Marineculture products will grow in the near future.")
+            )),
+          tags$hr(),
+          p(
+            h5(
+              "*The data have been collected from an Aquaculture Company Group located in Greece and refer to information about the orders of the company, amount of retail sales and quantity of fish, in the period between 1.1.2013 and 22.8.2017. Latest update: 24.9.2017"
+            )
+          ),
+          p(
+            h5(
+              "**FAO, (2016). The State of World Fisheries and Aquaculture 2016, FAO.Contributing to food security and nutrition for all. Rome, 200 pp."
+            )
+          )
+        )
       )
-    ))
-  )
+    ),
+    shiny::column(width = 3)
+  ),
+  # 3 ---
+  fluidRow(shiny::column(
+    width = 12,
+    img(
+      src = "Untitled-4.jpg",
+      height = "100%",
+      width = "100%"
+    )
+  ))
+)
 )

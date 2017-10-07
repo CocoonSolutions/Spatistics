@@ -12,3 +12,6 @@ datainput3 = readRDS("data/datainput3.rds")
 
 # Determine years
 years <- unique(as.integer(datainput0$issueyear))
+
+# point 7
+datainput1_legacy = readRDS("data/datainput1_legacy.rds")

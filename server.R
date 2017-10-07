@@ -126,12 +126,12 @@ shinyServer(function(input, output, session) {
         ))),
         tags$br(),
         sprintf(
-          "Cumulative frequency of Sales: %s",
+          "Cumulative frequency of Sales 2016: %s",
           as.integer(selectedZip$cumulfreqnum)
         ),
         tags$br(),
         sprintf(
-          "Total sales: %s €",
+          "Total sales 2016: %s €",
           format(
             as.integer(selectedZip$sales_c),
             big.mark = ",",
@@ -140,7 +140,7 @@ shinyServer(function(input, output, session) {
         ),
         tags$br(),
         sprintf(
-          "Total sales quantity: %s kgs",
+          "Total sales quantity 2016: %s kgs",
           format(
             as.integer(selectedZip$sales_q),
             big.mark = ",",
@@ -149,7 +149,7 @@ shinyServer(function(input, output, session) {
         ),
         tags$br(),
         sprintf(
-          "Total number of orders: %s",
+          "Total number of orders 2016: %s",
           format(
             as.integer(selectedZip$cnt),
             big.mark = ",",
@@ -500,7 +500,7 @@ shinyServer(function(input, output, session) {
   # point 7 area chart
   output$highchart71 <- renderHighchart({
     a071 = sqldf(
-      "Select 'Top 10 Countries in Sales' label, 100*sum(sales_c)/599716802 percent from datainput1 where cumulfreqnum > 12 union Select 'Rest of the Countries' label, 100*sum(sales_c)/599716802 percent from datainput1 where cumulfreqnum <= 12 "
+      "Select 'Top 10 Countries in Sales' label, 100*sum(sales_c)/599716802 percent from datainput1_legacy where cumulfreqnum > 12 union Select 'Rest of the Countries' label, 100*sum(sales_c)/599716802 percent from datainput1 where cumulfreqnum <= 12 "
     )
     a071$percent = as.numeric(format(a071$percent, digits = 4))
     highchart() %>%
@@ -511,7 +511,7 @@ shinyServer(function(input, output, session) {
         stacking = "normal",
         enableMouseTracking = FALSE
       )) %>%
-      hc_xAxis(categories = datainput1$code, plotBands = list(
+      hc_xAxis(categories = datainput1_legacy$code, plotBands = list(
         list(
           from = 28,
           to = 37,
@@ -519,8 +519,8 @@ shinyServer(function(input, output, session) {
           label = list(text = "")
         )
       )) %>%
-      hc_add_series(name = "Total Sales (€)", data = datainput1$sales_c) %>%
-      hc_add_series(name = "Total Quantity (kgr)", data = datainput1$sales_q) %>%
+      hc_add_series(name = "Total Sales (€)", data = datainput1_legacy$sales_c) %>%
+      hc_add_series(name = "Total Quantity (kgr)", data = datainput1_legacy$sales_q) %>%
       hc_add_series_labels_values(
         a071$label,
         a071$percent,
@@ -534,12 +534,12 @@ shinyServer(function(input, output, session) {
   })
   
   output$highchart72 <- renderHighchart({
-    datainput1$salesGroup = ifelse(
-      datainput1$cumulfreqnum > 12,
+    datainput1_legacy$salesGroup = ifelse(
+      datainput1_legacy$cumulfreqnum > 12,
       'Top 10 Countries in Sales',
       ifelse(
-        datainput1$cumulfreqnum <= 12 &
-          datainput1$cumulfreqnum > 1,
+        datainput1_legacy$cumulfreqnum <= 12 &
+          datainput1_legacy$cumulfreqnum > 1,
         'Countries with Medium Sales',
         'Countries with Less Sales'
       )
@@ -551,7 +551,7 @@ shinyServer(function(input, output, session) {
       hc_add_series(
         dataLabels = list(enabled = TRUE,
                           format = "{point.label}"),
-        data = datainput1,
+        data = datainput1_legacy,
         hcaes(
           x = gdp2016,
           y = pop2016,
