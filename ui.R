@@ -172,7 +172,7 @@ shinyUI(
           h4(
             "Sales between ",
             span(
-              "May and September reach an average of 44.62% of the total anual sales",
+              "May and September reach an average of 44.62% of the total annual sales",
               style = "color:#7cb5ec"
             ),
             ". July is the month with the largest number of sales with an average of 14 millions while in February sales are in their lowest point with an average of 10.460 millions. Moreover, ",
@@ -184,7 +184,7 @@ shinyUI(
           h4(
             "In July of 2016 the total sales of the ",
             span("company reached the number of 15,738€ millions ", style = "color:#7cb5ec"),
-            ". This was the largest number in sales per month, from January of 2013 until August of 2017, although the maximun average price per month is depicted in May."
+            ". This was the largest number in sales per month, from January of 2013 until August of 2017, although the maximum average price per month is depicted in May."
           )
         )),
         # ----------------------------------------
@@ -259,7 +259,7 @@ shinyUI(
           h4(
             "The total sales for ",
             span("size (400-600) increased in every year ", style = "color:#7cb5ec"),
-            " for the study period, starting from 63.540€ millions and ending up to 77.708€ millions, which lead to an incerase of ~ 22%."
+            " for the study period, starting from 63.540€ millions and ending up to 77.708€ millions, which lead to an increase of ~ 22%."
           )
         ),
         # ----------------------------------------
@@ -275,7 +275,7 @@ shinyUI(
             "In 2015 Seabream had a raise of ~ 7 billion € in sales"
           ),
           h4(
-            "In 2015, total production of Seabream was less than previous years. However, in the same year, ",
+            "In 2015, total production of Seabream was less than in previous years. However, in the same year, ",
             span(
               "the selling price of Seabream reached its maximum value with an average of 5.84€/kg.",
               style = "color:#7cb5ec"
@@ -312,7 +312,7 @@ shinyUI(
           ,
           highchartOutput("highchart6", width = "100%", height = "400px"),
           h4(
-            "Similar proportions are occured also in quantities. 93.75% of total quantity produced follows the path of the Whole fish while only the 6% is sold in the market as Fillet or Gutted fish."
+            "Similar proportions are occurred also in quantities. 93.75% of total quantity produced follows the path of the Whole fish while only the 6% is sold in the market as Fillet or Gutted fish."
           )
         )),
         # ----------------------------------------
@@ -330,7 +330,7 @@ shinyUI(
             )
             ,
             h4(
-              "The company has 38 point of sales all over the world. Each point represents a country from Canada to Singapore. Top 10 countries in sales are Italy, France, Greece, Portugal, Spain, Great Britain, Germany, USA, Holland and Romania. Betwwen period from January of 2013 to December of 2017, these ",
+              "The company has 38 point of sales all over the world. Each point represents a country from Canada to Singapore. Top 10 countries in sales are Italy, France, Greece, Portugal, Spain, Great Britain, Germany, USA, Holland and Romania. Between the period from January of 2013 to December of 2017, these ",
               span(
                 "10 countries held almost 90% of total sales (~535€ millions).",
                 style = "color:#7cb5ec"
@@ -345,19 +345,19 @@ shinyUI(
             h4(
               "A cluster analysis of countries characteristics shows that Russia, although has a GDP close to Romania and population 8 times more than Romania's, it is grouped with countries with medium sales. A further analysis shows that in August of 2014 Russia stopped purchasing fish products from the company. One reason for this is that this might be caused by ",
               span(
-                "Russia's embargo that bannned European Union food imports in August of 2014.",
+                "Russia's embargo that banned European Union food imports in August of 2014.",
                 style = "color:#7cb5ec"
               ),
             " And that is also the case with Ukraine."
           ),
           highchartOutput("highchart72", width = "100%", height = "400px"),
           h4(
-            "Another coclusion from this cluster analysis is that although Greece, Portugal, Esthonia and Chech Republic have great similarity in terms of GDP and total population, they are grouped in different clusters. Greece and Portugal belong to the first group whereas Esthonia and Chech Republic belong to the second. This is also due to the fact that ",
+            "Another conclusion from this cluster analysis is that although Greece, Portugal, Estonia and Czech Republic have great similarity in terms of GDP and total population, they are grouped in different clusters. Greece and Portugal belong to the first group whereas Estonia and Czech Republic belong to the second. This is also due to the fact that ",
               span(
-                "Greece is where company's head office are located and Portugal has a very high rate in sales (4rth place)",
+                "Greece is where company's head office are located and Portugal has a very high rate in sales (4th place)",
                 style = "color:#7cb5ec"
               ),
-            " whereas sales figures for Esthonia and Chech Republic show a discontinuous demand for fish."
+            " whereas sales figures for Estonia and Czech Republic show a discontinuous demand for fish."
           )
         )
       ),
@@ -375,12 +375,12 @@ shinyUI(
             "Mapping and classification analysis of destinations"
           ),
           h4(
-            "In 2016, 84% of the countries that had at least one trunsanction were Europian. Using the classification method of equal intervals with 7 classes, the map shows that in case of total quantity for year 2016, the 7th class contains 22 countries. That is also the case with total sales. This indicates that top countries in sales exceed by far countries with lower sales. The countries with the higher sales were Italy, France, Greece, Spain and Portugal. Actually, ",
+            "In 2016, 84% of the countries that had at least one trunsanction were European. Using the classification method of equal intervals with 7 classes, the map shows that in case of total quantity for year 2016, the 7th class contains 22 countries. That is also the case with total sales. This indicates that top countries in sales exceed by far countries with lower sales. The countries with the higher sales were Italy, France, Greece, Spain and Portugal. Actually, ",
               span(
                 "~67% of total sales in 2016 came from 16% of total countries",
                 style = "color:#7cb5ec"
               ),
-            " or from 5 mediterranean countries."
+            " or from 5 Mediterranean countries."
           ),
           leafletOutput("map", "100%", "400px"),
           br()
@@ -424,14 +424,14 @@ shinyUI(
               h4(
                 "According to countries classification, the ",
               span(
-                "top 5 countries belong to five different clsses",
+                "top 5 countries belong to five different classes",
                 style = "color:#7cb5ec"
               ),
             ". The scatter plot describes the reason of this result. The top 5 five countries on the upper right of the plot are shown to have larger distances among them whereas countries with lower sales and quantity are very close to each other and thus can be easily grouped together."
               ),
-            p(h4("The cumulative frequency of sales, which is defined as the sum of all previous frequencies up to the current point when frequencies are ordered from the smallest to the largest, indicates the ",
+            p(h4("The cumulative frequency of sales, which is defined as the sum of all previous frequencies up to the current point, when frequencies are ordered from the smallest to the largest, indicates that ",
               span(
-                "small contribution of countries with lower sales to total sales.",
+                "countries with lower sales have a small contribution in total sales.",
                 style = "color:#7cb5ec"
               )))
             )
@@ -472,14 +472,38 @@ shinyUI(
             span("-", style = "color:white; font-size: 120%;"),
             "Conclusion"
           ),
-          p(h4("In summation, in view of this analysis, Marineculture is a dynamic growing sector and can contribute measurably to the completion of the increasing demand for food in the next decades.")),
           p(h4("The main conclusions of this analysis are briefly summarised below:")),
              h4(tags$ul(
-              tags$li("Countries that import and consume the majority of these specific types of fish products are the mediterranean countries (Italy, France, Greece, Spain and Portugal)."),
-              tags$li("The consumers prefer fish categories with smaller sizes than categories with larger sizes."),
-              tags$li("Selling prices are higher during summer months, especially in July."),
-              tags$li("The demand for Marineculture products will grow in the near future.")
+              tags$li("Countries that import and consume the majority of these specific types of fish products are the ",
+              span(
+                "mediterranean countries",
+                style = "color:#7cb5ec"
+              ), "mediterranean countries (Italy, France, Greece, Spain and Portugal)."),
+              tags$li("The consumers ",
+              span(
+                "prefer fish categories with smaller sizes",
+                style = "color:#7cb5ec"
+              ), " than categories with larger sizes."),
+              tags$li("Selling prices are ",
+              span(
+                "higher during summer months",
+                style = "color:#7cb5ec"
+              ), ", especially in July."),
+              tags$li("The ",
+              span(
+                "demand for Marineculture products will grow",
+                style = "color:#7cb5ec"
+              ), " in the near future.")
             )),
+          p(h4("Global population is expected to reach ",
+              span(
+                "9.7 billion by 2050.",
+                style = "color:#7cb5ec"
+              ), " As far as the oceans and inland waters provide potentials to contribute ever more to food security and adequate nutrition for the global population, aquaculture will remain an important source in the future. Thus, in view of this analysis, Marineculture can be chacterized as a ",
+              span(
+                "dynamic growing sector that will contribute measurably",
+                style = "color:#7cb5ec"
+              ), " to the completion of the increasing demand for food in the next decades.")),
           tags$hr(),
           p(
             h5(
